@@ -12,4 +12,8 @@ class CinemaSystemApplicationTests {
         assertTrue(true);
 	}
 
+	@Test
+	void shouldBeTrue2() {
+		assertTrue(true);
+	}
 }
