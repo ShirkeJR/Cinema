@@ -19,9 +19,10 @@ public class CloseShowReservationHandler implements Handler<CancelShowReservatio
 
     @Override
     public String handle(CancelShowReservationCommand cmd) {
-        var showReservation = showReservationRepository.get(cmd.showReservationID);
+        var showReservation = showReservationRepository.get(cmd.showReservationID)
+                .orElseThrow(IllegalArgumentException::new);
         showReservation.cancel();
-        var show = showRepository.get(showReservation.getShowId());
+        var show = showRepository.get(showReservation.getShowId()).orElseThrow(IllegalArgumentException::new);
         show.unblockSeats(showReservation.getOccupiedSeats());
         showReservationRepository.put(showReservation);
         showRepository.put(show);

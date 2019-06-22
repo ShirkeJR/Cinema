@@ -12,4 +12,6 @@ public class Cinema {
   private UUID id;
   private String name;
   private String city;
+
+
 }

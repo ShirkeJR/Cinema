@@ -1,11 +1,12 @@
 package CinemaSystem.CinemaSystem.administration.domain;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface CinemaRepository {
 
-  Cinema get(UUID number);
+  Optional<Cinema> get(UUID number);
 
   void put(Cinema cinema);
 

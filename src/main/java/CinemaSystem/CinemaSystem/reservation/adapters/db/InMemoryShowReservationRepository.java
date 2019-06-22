@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -14,11 +15,11 @@ public class InMemoryShowReservationRepository implements ShowReservationReposit
     private Map<UUID, ShowReservation> db = new HashMap<>();
 
     @Override
-    public ShowReservation get(UUID id) {
+    public Optional<ShowReservation> get(UUID id) {
         if (!db.containsKey(id)) {
-            throw new IllegalArgumentException("No cinema by Id");
+            //throw new IllegalArgumentException("No cinema by Id");
         }
-        return db.get(id);
+        return Optional.of(db.get(id));
     }
 
     @Override

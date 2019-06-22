@@ -11,14 +11,14 @@ import org.springframework.stereotype.Service;
 import java.util.UUID;
 
 @Service
-public class ShowReservationHandler implements Handler<CreateShowReservationCommand, UUID> {
+public class CreateShowReservationHandler implements Handler<CreateShowReservationCommand, UUID> {
 
   private final ShowReservationRepository showReservationRepository;
   private final ShowReservationFactory showReservationFactory;
   private final ShowRepository showRepository;
 
   @Autowired
-  public ShowReservationHandler(
+  public CreateShowReservationHandler(
       ShowReservationRepository showReservationRepository,
       ShowReservationFactory showReservationFactory,
       ShowRepository showRepository) {
@@ -29,7 +29,7 @@ public class ShowReservationHandler implements Handler<CreateShowReservationComm
   }
 
   public UUID handle(CreateShowReservationCommand cmd) {
-    var show = showRepository.get(cmd.showId);
+    var show = showRepository.get(cmd.showId).orElseThrow(IllegalArgumentException::new);
     if (!show.blockSeatsIfPossible(cmd.occupiedSeats)) {
       throw new IllegalArgumentException("No seats possible");
     }

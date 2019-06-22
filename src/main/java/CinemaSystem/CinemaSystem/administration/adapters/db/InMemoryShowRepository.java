@@ -5,21 +5,18 @@ import CinemaSystem.CinemaSystem.administration.domain.ShowRepository;
 import com.google.common.collect.Lists;
 import org.springframework.stereotype.Repository;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @Repository
 public class InMemoryShowRepository implements ShowRepository {
   private Map<UUID, Show> db = new HashMap<>();
 
   @Override
-  public Show get(UUID id) {
+  public Optional<Show> get(UUID id) {
     if (!db.containsKey(id)) {
       throw new IllegalArgumentException("No show by Id");
     }
-    return db.get(id);
+    return Optional.of(db.get(id));
   }
 
   @Override

@@ -13,7 +13,6 @@ import java.util.Map;
 import java.util.UUID;
 
 @Getter
-@Builder
 public class Show {
 
   private UUID id;
@@ -28,9 +27,15 @@ public class Show {
   @ElementCollection
   private Map<String, BigDecimal> tickets;
 
+  public Show(UUID id, Movie movie, CinemaHall cinemaHall, Instant time, Map<String, BigDecimal> tickets) {
+    this.id = id;
+    this.movie = movie;
+    this.cinemaHall = cinemaHall;
+    this.time = time;
+    this.tickets = tickets;
+  }
+
   public boolean blockSeatsIfPossible(List<Seat> occupiedSeats) {
-    cinemaHall.checkSeats();
-    cinemaHall.blockSeats();
     return true;
   }
 

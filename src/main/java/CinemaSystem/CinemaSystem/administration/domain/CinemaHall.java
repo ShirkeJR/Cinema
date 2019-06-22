@@ -1,58 +1,57 @@
 package CinemaSystem.CinemaSystem.administration.domain;
 
+import CinemaSystem.CinemaSystem.reservation.domain.Seat;
 import lombok.Getter;
 
-import javax.persistence.ElementCollection;
 import javax.persistence.Embeddable;
 import javax.persistence.ManyToOne;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 
 @Getter
 @Embeddable
 public class CinemaHall {
 
-  private final int rows = 20;
-  private final int columns = 30;
+  private int rows;
+  private int columns;
 
-  @ManyToOne
-  private Cinema cinema;
+  @ManyToOne private Cinema cinema;
 
-  @ElementCollection
-  private List<Seat> seats = new ArrayList<>();
+  Set<CinemaHallSeat> cinemaHallSeats = new HashSet<>();
 
-  public CinemaHall(Cinema cinema) {
+  public CinemaHall(Cinema cinema, int rows, int columns) {
     this.cinema = cinema;
-    createCinemaHall();
+    this.rows = rows;
+    this.columns = columns;
+    createCinemaHall(rows, columns);
   }
 
-  private void createCinemaHall() {
-    seats = new ArrayList<>();
+  private void createCinemaHall(int rows, int columns) {
     for (int i = 0; i < rows; i++) {
       for (int j = 0; j < columns; j++) {
-        seats.add(new Seat(i, j));
+        cinemaHallSeats.add(new CinemaHallSeat(i, j));
       }
     }
   }
 
-  public void checkSeats() {
-
-
+  public void blockSeats(List<Seat> occupiedSeats) {
+    occupiedSeats.forEach(seat -> findSeat(seat).blockIfPossible());
   }
 
-  public void blockSeats() {
-
-
+  public CinemaHallSeat findSeat(Seat seat) {
+    return cinemaHallSeats.stream()
+        .filter(cinemaHallSeat -> isSearchedSeat(seat, cinemaHallSeat))
+        .findFirst()
+        .orElseThrow(IllegalArgumentException::new);
   }
 
-  public final class Seat {
-    private int row;
-    private int col;
-    private boolean blocked;
+  private boolean isSearchedSeat(Seat seat, CinemaHallSeat cinemaHallSeat) {
+    return cinemaHallSeat.getCol() == seat.getCol() && cinemaHallSeat.getRow() == seat.getRow();
+  }
 
-    public Seat(int row, int col) {
-      this.row = row;
-      this.col = col;
-      this.blocked = false;
-    }
+  public void unBlockSeats(List<Seat> unBlockedSeats) {
+    unBlockedSeats.forEach(seat -> findSeat(seat).freeSeat());
   }
 }

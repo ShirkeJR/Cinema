@@ -2,7 +2,9 @@ package CinemaSystem.CinemaSystem.administration.adapters.rest;
 
 import CinemaSystem.CinemaSystem.administration.domain.Movie;
 import CinemaSystem.CinemaSystem.administration.domain.MovieRepository;
+import CinemaSystem.CinemaSystem.administration.domain.catolog.MovieCatalog;
 import CinemaSystem.CinemaSystem.administration.domain.commands.CreateMovieCommand;
+import CinemaSystem.CinemaSystem.core.CommandGateway;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,28 +16,27 @@ import java.util.UUID;
 @RequestMapping("/api/movie")
 public class MovieController {
 
-  private final MovieRepository movieRepository;
+  private final CommandGateway commandGateway;
+  private final MovieCatalog movieCatalog;
 
   @Autowired
-  public MovieController(MovieRepository movieRepository) {
-    this.movieRepository = movieRepository;
+  public MovieController(CommandGateway commandGateway, MovieCatalog movieCatalog) {
+    this.commandGateway = commandGateway;
+    this.movieCatalog = movieCatalog;
   }
 
   @PostMapping
   public String create(@RequestBody CreateMovieCommand cmd) {
-    var movie =
-        Movie.builder().id(UUID.randomUUID()).title(cmd.title).description(cmd.description).build();
-    movieRepository.put(movie);
-    return movie.getId().toString();
+    return commandGateway.execute(cmd).toString();
   }
 
   @GetMapping
   public List<Movie> getAll() {
-    return movieRepository.getAll();
+    return movieCatalog.getAll();
   }
 
   @GetMapping("/{id}")
   public Movie get(@PathVariable UUID id) {
-    return movieRepository.get(id);
+    return movieCatalog.get(id);
   }
 }

@@ -1,7 +1,9 @@
 package CinemaSystem.CinemaSystem.administration.adapters.rest;
 
 import CinemaSystem.CinemaSystem.administration.domain.*;
+import CinemaSystem.CinemaSystem.administration.domain.catolog.ShowCatalog;
 import CinemaSystem.CinemaSystem.administration.domain.commands.CreateShowCommand;
+import CinemaSystem.CinemaSystem.core.CommandGateway;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,43 +15,27 @@ import java.util.UUID;
 @RequestMapping("/api/show")
 public class ShowController {
 
-  private final ShowRepository showRepository;
-  private final MovieRepository movieRepository;
-  private final CinemaRepository cinemaRepository;
+  private final CommandGateway commandGateway;
+  private final ShowCatalog showCatalog;
 
   @Autowired
-  public ShowController(
-      ShowRepository showRepository,
-      MovieRepository movieRepository,
-      CinemaRepository cinemaRepository) {
-
-    this.showRepository = showRepository;
-    this.movieRepository = movieRepository;
-    this.cinemaRepository = cinemaRepository;
+  public ShowController(CommandGateway commandGateway, ShowCatalog showCatalog) {
+    this.commandGateway = commandGateway;
+    this.showCatalog = showCatalog;
   }
 
   @PostMapping
   public String create(@RequestBody CreateShowCommand cmd) {
-    var cinema = cinemaRepository.get(cmd.cinemaId);
-    var show = Show.builder()
-            .id(UUID.randomUUID())
-            .cinemaHall(new CinemaHall(cinema))
-            .time(cmd.time)
-            .movie(movieRepository.get(cmd.movieId))
-            .tickets(cmd.tickets)
-            .build();
-
-    showRepository.put(show);
-    return show.getId().toString();
+    return commandGateway.execute(cmd).toString();
   }
 
   @GetMapping
   public List<Show> getAll() {
-    return showRepository.getAll();
+    return showCatalog.getAll();
   }
 
   @GetMapping("/{id}")
   public Show get(@PathVariable UUID id) {
-    return showRepository.get(id);
+    return showCatalog.get(id);
   }
 }

@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Bean;
 import java.lang.reflect.ParameterizedType;
 
 @SpringBootApplication
-public class CinemaSystemApplication {
+public class CinemaSystemApplication{
 
 	public static void main(String[] args) {
 		SpringApplication.run(CinemaSystemApplication.class, args);
@@ -25,5 +25,4 @@ public class CinemaSystemApplication {
 		});
 		return commandGateway;
 	}
-
 }
