@@ -16,11 +16,7 @@ public class CinemaTest {
   @Test
   void createsCinema() {
     var cmd = prepareCreateCinemaCommand();
-    var cinema = Cinema.builder()
-            .id(id)
-            .city(cmd.city)
-            .name(cmd.name)
-            .build();
+    var cinema = Cinema.builder().id(id).city(cmd.city).name(cmd.name).build();
 
     assertThat(cinema.getId()).isEqualTo(id);
     assertThat(cinema.getName()).isEqualTo(name);

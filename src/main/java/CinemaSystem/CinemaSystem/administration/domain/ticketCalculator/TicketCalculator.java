@@ -3,19 +3,18 @@ package CinemaSystem.CinemaSystem.administration.domain.ticketCalculator;
 import CinemaSystem.CinemaSystem.administration.domain.exeptions.IllegalTicketTypeException;
 import CinemaSystem.CinemaSystem.reservation.domain.Ticket;
 import CinemaSystem.CinemaSystem.reservation.domain.TicketOrder;
+import com.google.common.collect.Sets;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 @Component
 public class TicketCalculator {
 
-  public Set<TicketOrder> calculateTickets(Map<String, BigDecimal> ticketPrices, List<Ticket> tickets) {
-    Set<TicketOrder> ticketOrders = new HashSet<>();
+  public Set<TicketOrder> calculateTickets(Map<String, BigDecimal> ticketPrices, Set<Ticket> tickets) {
+    Set<TicketOrder> ticketOrders = Sets.newHashSet();
 
     for (Ticket ticket : tickets) {
       if (!ticketPrices.containsKey(ticket.getType())) {

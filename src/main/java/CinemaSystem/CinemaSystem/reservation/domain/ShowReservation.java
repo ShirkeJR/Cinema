@@ -1,22 +1,24 @@
 package CinemaSystem.CinemaSystem.reservation.domain;
 
-import com.google.common.collect.Sets;
+import CinemaSystem.CinemaSystem.reservation.domain.exceptions.InvalidShowReservationStatusException;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 import static CinemaSystem.CinemaSystem.reservation.domain.ShowReservationStatus.*;
 
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class ShowReservation {
 
-  private final String id;
-  private final String showId;
+  private String id;
+  private String showId;
 
-  private Optional<Customer> customer;
+  private Customer customer;
 
   private ShowReservationStatus showReservationStatus;
 
@@ -25,30 +27,39 @@ public class ShowReservation {
   private Set<TicketOrder> tickets;
 
   public ShowReservation(
-          String id, String showId, Customer customer, List<Seat> reservedSeats, Set<TicketOrder> tickets) {
-    this.id = id;
-    this.showId = showId;
-    this.customer = Optional.of(customer);
-    this.reservedSeats = Sets.newHashSet(reservedSeats);
-    this.tickets = tickets;
-    this.showReservationStatus = CONFIRMED;
-  }
-
-  public ShowReservation(String id, String showId, List<Seat> reservedSeats, Set<TicketOrder> tickets) {
+      String id, String showId, Set<Seat> reservedSeats, Set<TicketOrder> tickets) {
 
     this.id = id;
     this.showId = showId;
-    this.customer = Optional.empty();
-    this.reservedSeats = Sets.newHashSet(reservedSeats);
+    customer = new Customer();
+    this.reservedSeats = reservedSeats;
     this.tickets = tickets;
     this.showReservationStatus = PAYED;
   }
 
+  public ShowReservation(
+      String id,
+      String showId,
+      Customer customer,
+      Set<Seat> reservedSeats,
+      Set<TicketOrder> tickets) {
+
+    this.id = id;
+    this.showId = showId;
+    this.customer = customer;
+    this.showReservationStatus = CONFIRMED;
+    this.reservedSeats = reservedSeats;
+    this.tickets = tickets;
+  }
+
   public void cancel() {
+    if (showReservationStatus == CANCELED) throw new InvalidShowReservationStatusException();
     showReservationStatus = CANCELED;
   }
 
   public void pay() {
+    if (showReservationStatus == PAYED || showReservationStatus == CANCELED)
+      throw new InvalidShowReservationStatusException();
     showReservationStatus = PAYED;
   }
 
@@ -63,6 +74,6 @@ public class ShowReservation {
   }
 
   public boolean isNotPayed() {
-    return showReservationStatus != PAYED;
+    return showReservationStatus == CONFIRMED;
   }
 }

@@ -5,6 +5,5 @@ public class SeatIsAlreadyBlockedException extends RuntimeException {
     super(message);
   }
 
-  public SeatIsAlreadyBlockedException() {
-  }
+  public SeatIsAlreadyBlockedException() {}
 }

@@ -4,11 +4,11 @@ import CinemaSystem.CinemaSystem.core.Command;
 import CinemaSystem.CinemaSystem.reservation.domain.Seat;
 import CinemaSystem.CinemaSystem.reservation.domain.Ticket;
 
-import java.util.List;
+import java.util.Set;
 
 public class CreatePayedShowReservationCommand implements Command {
 
-    public String showId;
-    public List<Seat> reservedSeats;
-    public List<Ticket> tickets;
+  public String showId;
+  public Set<Seat> reservedSeats;
+  public Set<Ticket> tickets;
 }

@@ -3,25 +3,23 @@ package CinemaSystem.CinemaSystem.administration.domain;
 import CinemaSystem.CinemaSystem.administration.domain.exeptions.InvalidSeatException;
 import CinemaSystem.CinemaSystem.reservation.domain.Seat;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-import javax.persistence.Embeddable;
-import javax.persistence.ManyToOne;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-
 @Getter
-@Embeddable
+@NoArgsConstructor
 public class CinemaHall {
 
   private int rows;
   private int columns;
 
-  @ManyToOne private Cinema cinema;
+  private Cinema cinema;
 
-  Set<CinemaHallSeat> cinemaHallSeats = new HashSet<>();
+  private Set<CinemaHallSeat> cinemaHallSeats = new HashSet<>();
 
   public CinemaHall(Cinema cinema, int rows, int columns) {
     this.cinema = cinema;
@@ -54,12 +52,10 @@ public class CinemaHall {
   }
 
   public void unBlockSeatsIfPossible(Set<Seat> unBlockedSeats) {
-    unBlockedSeats.forEach(seat -> findSeat(seat).freeSeat());
+    unBlockedSeats.forEach(seat -> findSeat(seat).unblockSeat());
   }
 
-  public List<CinemaHallSeat> calculateFreeSeats(){
-    return cinemaHallSeats.stream()
-            .filter(CinemaHallSeat::isFree)
-            .collect(Collectors.toList());
+  public List<CinemaHallSeat> calculateFreeSeats() {
+    return cinemaHallSeats.stream().filter(CinemaHallSeat::isFree).collect(Collectors.toList());
   }
 }

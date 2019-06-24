@@ -16,8 +16,9 @@ import org.mockito.MockitoAnnotations;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.List;
+import java.util.Date;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -50,10 +51,8 @@ public class ShowTest {
   private final Movie movie =
       Movie.builder().id(movieId).title(movieTitle).description(movieDesc).build();
 
-  @Mock
-  private ShowReservation showReservation;
-  @Mock
-  private TicketCalculator ticketCalculator;
+  @Mock private ShowReservation showReservation;
+  @Mock private TicketCalculator ticketCalculator;
 
   @BeforeEach
   void setUp() {
@@ -63,12 +62,12 @@ public class ShowTest {
   @Test
   void createsShow() {
     var cmd = prepareCreateShowCommand();
-    var show = new Show(id, movie, cinemaHall, cmd.time, cmd.tickets, ticketCalculator);
+    var show = new Show(id, movie, cinemaHall, Date.from(cmd.time), cmd.tickets, ticketCalculator);
 
     assertThat(show.getId()).isEqualTo(id);
     assertThat(show.getCinemaHall()).isEqualTo(cinemaHall);
     assertThat(show.getMovie().getId()).isEqualTo(movieId);
-    assertThat(show.getTime()).isEqualTo(time);
+    assertThat(show.getTime()).isEqualTo(Date.from(time));
     assertThat(show.getTicketPrices()).isEqualTo(tickets);
   }
 
@@ -85,7 +84,19 @@ public class ShowTest {
   void reservesShow() {
     var show = createShow();
     var reservedSeat = new Seat(2, 3);
-    when(showReservation.getReservedSeats()).thenReturn(Sets.newHashSet(reservedSeat));
+    when(showReservation.getReservedSeats()).thenReturn(Set.of(reservedSeat));
+
+    show.reserveReservation(showReservation);
+
+    assertThat(show.getReservations().size()).isEqualTo(1);
+    assertThat(show.getReservations().get(0)).isEqualTo(showReservation);
+  }
+
+  @Test
+  void reservesReservedShow() {
+    var show = createShow();
+    var reservedSeat = new Seat(2, 3);
+    when(showReservation.getReservedSeats()).thenReturn(Set.of(reservedSeat));
 
     show.reserveReservation(showReservation);
 
@@ -107,20 +118,18 @@ public class ShowTest {
 
   private Show createShow() {
     var cmd = prepareCreateShowCommand();
-    return new Show(id, movie, cinemaHall, cmd.time, cmd.tickets, ticketCalculator);
+    return new Show(id, movie, cinemaHall, Date.from(cmd.time), cmd.tickets, ticketCalculator);
   }
 
   @Test
   void expectsInvalidSeatAndTicketCountExceptionWhenTicketsCountIsNotEqualToSeatsCount() {
     var seatsCount = 4;
-    var reservedTickets = List.of(
-            new Ticket("normal", 2),
-            new Ticket("extra", 1));
+    var reservedTickets = Set.of(new Ticket("normal", 2), new Ticket("extra", 1));
     var show = createShow();
 
     Executable executable = () -> show.calculateTicketsPerSeats(reservedTickets, seatsCount);
 
     assertThrows(InvalidSeatAndTicketCountException.class, executable);
   }
-
+  
 }

@@ -1,16 +1,17 @@
 package CinemaSystem.CinemaSystem.reservation.domain;
 
+import CinemaSystem.CinemaSystem.reservation.domain.exceptions.InvalidShowReservationStatusException;
 import com.google.common.collect.Sets;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
 import static CinemaSystem.CinemaSystem.reservation.domain.ShowReservationStatus.*;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ShowReservationTest {
 
@@ -18,7 +19,7 @@ class ShowReservationTest {
   private final String showId = UUID.randomUUID().toString();
   private final Seat reservedSeat1 = new Seat(2, 3);
   private final Seat reservedSeat2 = new Seat(4, 5);
-  private final List<Seat> reservedSeats = List.of(reservedSeat1, reservedSeat2);
+  private final Set<Seat> reservedSeats = Set.of(reservedSeat1, reservedSeat2);
   private final TicketOrder ticket1 =
       TicketOrder.builder()
           .type("normal")
@@ -33,7 +34,7 @@ class ShowReservationTest {
           .pricePerOne(new BigDecimal(15))
           .totalPrice(new BigDecimal(15))
           .build();
-  private final Set<TicketOrder> tickets = Sets.newHashSet(ticket1, ticket2);
+  private final Set<TicketOrder> tickets = Set.of(ticket1, ticket2);
   private final String CustomerEmail = "adjasuidja@o2.pl";
   private final String CustomerFirstName = "Tomek";
   private final String CustomerLastName = "Kowalski";
@@ -52,10 +53,10 @@ class ShowReservationTest {
 
     assertThat(showReservation.getId()).isEqualTo(id);
     assertThat(showReservation.getShowId()).isEqualTo(showId);
-    assertThat(showReservation.getCustomer().get().getFirstName()).isEqualTo(CustomerFirstName);
-    assertThat(showReservation.getCustomer().get().getLastName()).isEqualTo(CustomerLastName);
-    assertThat(showReservation.getCustomer().get().getEmail()).isEqualTo(CustomerEmail);
-    assertThat(showReservation.getCustomer().get().getPhoneNumer()).isEqualTo(CustomerPhoneNumber);
+    assertThat(showReservation.getCustomer().getFirstName()).isEqualTo(CustomerFirstName);
+    assertThat(showReservation.getCustomer().getLastName()).isEqualTo(CustomerLastName);
+    assertThat(showReservation.getCustomer().getEmail()).isEqualTo(CustomerEmail);
+    assertThat(showReservation.getCustomer().getPhoneNumer()).isEqualTo(CustomerPhoneNumber);
     assertThat(showReservation.getReservedSeats()).isEqualTo(Sets.newHashSet(reservedSeats));
     assertThat(showReservation.getTickets()).isEqualTo(Sets.newHashSet(tickets));
     assertThat(showReservation.getShowReservationStatus()).isEqualTo(CONFIRMED);
@@ -67,7 +68,7 @@ class ShowReservationTest {
 
     assertThat(showReservation.getId()).isEqualTo(id);
     assertThat(showReservation.getShowId()).isEqualTo(showId);
-    assertThat(showReservation.getCustomer()).isEqualTo(Optional.empty());
+    assertThat(showReservation.getCustomer()).isNotNull();
     assertThat(showReservation.getReservedSeats()).isEqualTo(Sets.newHashSet(reservedSeats));
     assertThat(showReservation.getTickets()).isEqualTo(Sets.newHashSet(tickets));
     assertThat(showReservation.getShowReservationStatus()).isEqualTo(PAYED);
@@ -100,6 +101,35 @@ class ShowReservationTest {
     BigDecimal totalCostOfTickets = showReservation.calculateTotalPrice();
 
     assertThat(totalCostOfTickets).isEqualTo(costOfThreeTickets(ticket1, ticket2));
+  }
+
+  @Test
+  void expectsInvalidShowReservationStatusExceptionWhenPayForPayedReservation() {
+    var showReservation = createPayedShowReservation();
+
+    Executable executable = showReservation::pay;
+
+    assertThrows(InvalidShowReservationStatusException.class, executable);
+  }
+
+  @Test
+  void expectsInvalidShowReservationStatusExceptionWhenPayForCanceledReservation() {
+    var showReservation = createShowReservation();
+    showReservation.cancel();
+
+    Executable executable = showReservation::pay;
+
+    assertThrows(InvalidShowReservationStatusException.class, executable);
+  }
+
+  @Test
+  void expectsInvalidShowReservationStatusExceptionWhenCancelCanceledReservation() {
+    var showReservation = createShowReservation();
+    showReservation.cancel();
+
+    Executable executable = showReservation::cancel;
+
+    assertThrows(InvalidShowReservationStatusException.class, executable);
   }
 
   private ShowReservation createShowReservation() {

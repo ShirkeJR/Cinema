@@ -5,12 +5,12 @@ import CinemaSystem.CinemaSystem.reservation.domain.Customer;
 import CinemaSystem.CinemaSystem.reservation.domain.Seat;
 import CinemaSystem.CinemaSystem.reservation.domain.Ticket;
 
-import java.util.List;
+import java.util.Set;
 
 public class CreateShowReservationCommand implements Command {
 
   public String showId;
   public Customer customer;
-  public List<Seat> reservedSeats;
-  public List<Ticket> tickets;
+  public Set<Seat> reservedSeats;
+  public Set<Ticket> tickets;
 }

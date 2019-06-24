@@ -4,5 +4,5 @@ import CinemaSystem.CinemaSystem.core.Command;
 
 public class CancelShowReservationCommand implements Command {
 
-    public String reservationId;
+  public String reservationId;
 }

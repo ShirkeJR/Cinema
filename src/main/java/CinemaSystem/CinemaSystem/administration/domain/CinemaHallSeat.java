@@ -25,15 +25,15 @@ public class CinemaHallSeat {
     else throw new SeatIsAlreadyBlockedException("Seat is already blocked");
   }
 
-  public void freeSeat() {
+  public void unblockSeat() {
     status = FREE;
   }
 
-  public boolean isFree(){
+  public boolean isFree() {
     return status == FREE;
   }
 
-  public enum HallSeatStatus {
+  protected enum HallSeatStatus {
     BLOCKED,
     FREE
   }
@@ -43,8 +43,7 @@ public class CinemaHallSeat {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     CinemaHallSeat that = (CinemaHallSeat) o;
-    return row == that.row &&
-            col == that.col;
+    return row == that.row && col == that.col;
   }
 
   @Override

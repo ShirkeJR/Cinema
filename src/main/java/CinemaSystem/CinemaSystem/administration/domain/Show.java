@@ -6,46 +6,46 @@ import CinemaSystem.CinemaSystem.administration.domain.ticketCalculator.TicketCa
 import CinemaSystem.CinemaSystem.reservation.domain.ShowReservation;
 import CinemaSystem.CinemaSystem.reservation.domain.Ticket;
 import CinemaSystem.CinemaSystem.reservation.domain.TicketOrder;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-import javax.persistence.ManyToOne;
 import java.math.BigDecimal;
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Show {
 
   private String id;
 
-  @ManyToOne private Movie movie;
+  private Movie movie;
 
   private CinemaHall cinemaHall;
 
-  private Instant time;
+  private Date time;
 
   private Map<String, BigDecimal> ticketPrices;
 
   private TicketCalculator ticketCalculator;
 
-  private List<ShowReservation> reservations = new ArrayList<>();
+  private List<ShowReservation> reservations;
 
   public Show(
-          String id,
-          Movie movie,
-          CinemaHall cinemaHall,
-          Instant time,
-          Map<String, BigDecimal> ticketPrices,
-          TicketCalculator ticketCalculator) {
+      String id,
+      Movie movie,
+      CinemaHall cinemaHall,
+      Date time,
+      Map<String, BigDecimal> ticketPrices,
+      TicketCalculator ticketCalculator) {
     this.id = id;
     this.movie = movie;
     this.cinemaHall = cinemaHall;
     this.time = time;
     this.ticketPrices = ticketPrices;
     this.ticketCalculator = ticketCalculator;
+    reservations = new ArrayList<>();
   }
 
   public void reserveReservation(ShowReservation reservation) {
@@ -58,12 +58,12 @@ public class Show {
     reservations.remove(showReservation);
   }
 
-  public Set<TicketOrder> calculateTicketsPerSeats(List<Ticket> tickets, int seatsCount) {
+  public Set<TicketOrder> calculateTicketsPerSeats(Set<Ticket> tickets, int seatsCount) {
     validateTicketsAndSeatsCount(tickets, seatsCount);
     return ticketCalculator.calculateTickets(ticketPrices, tickets);
   }
 
-  private void validateTicketsAndSeatsCount(List<Ticket> tickets, int seatsCount) {
+  private void validateTicketsAndSeatsCount(Set<Ticket> tickets, int seatsCount) {
     int ticketsCount =
         tickets.stream()
             .map(Ticket::getCount)

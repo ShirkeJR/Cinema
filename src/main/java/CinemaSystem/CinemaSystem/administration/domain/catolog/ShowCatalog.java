@@ -3,7 +3,6 @@ package CinemaSystem.CinemaSystem.administration.domain.catolog;
 import CinemaSystem.CinemaSystem.administration.domain.CinemaHallSeat;
 import CinemaSystem.CinemaSystem.administration.domain.Show;
 import CinemaSystem.CinemaSystem.administration.domain.ShowRepository;
-import CinemaSystem.CinemaSystem.administration.domain.exeptions.ShowNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,12 +18,12 @@ public class ShowCatalog {
   @Autowired ModelMapper modelMapper;
 
   @Autowired
-  public ShowCatalog(ShowRepository movieRepository) {
-    this.showRepository = movieRepository;
+  public ShowCatalog(ShowRepository showRepository) {
+    this.showRepository = showRepository;
   }
 
   public ShowDto get(String id) {
-    return convertShowToDto(showRepository.get(id).orElseThrow(ShowNotFoundException::new));
+    return convertShowToDto(showRepository.get(id));
   }
 
   public List<ShowDto> getAll() {
@@ -34,7 +33,7 @@ public class ShowCatalog {
   }
 
   public List<CinemaHallSeat> getFreeSeats(String id) {
-    var show = showRepository.get(id).orElseThrow(ShowNotFoundException::new);
+    var show = showRepository.get(id);
     return show.getCinemaHall().calculateFreeSeats();
   }
 

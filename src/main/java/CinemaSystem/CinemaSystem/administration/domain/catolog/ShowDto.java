@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.time.Instant;
+import java.util.Date;
 import java.util.Map;
 
 @Getter
@@ -14,6 +14,6 @@ public class ShowDto {
 
   public String id;
   public Movie movie;
-  public Instant time;
+  public Date time;
   public Map<String, BigDecimal> ticketPrices;
 }

@@ -19,12 +19,11 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.List;
+import java.util.Date;
 import java.util.Map;
-import java.util.Optional;
+import java.util.Set;
 
-import static CinemaSystem.CinemaSystem.reservation.domain.ShowReservationStatus.CANCELED;
-import static CinemaSystem.CinemaSystem.reservation.domain.ShowReservationStatus.PAYED;
+import static CinemaSystem.CinemaSystem.reservation.domain.ShowReservationStatus.*;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @SpringBootTest
@@ -43,11 +42,11 @@ public class CommandsTest {
 
     String id = commandGateway.execute(createCinemaCommand);
 
-    Optional<Cinema> cinema = cinemaRepository.get(id);
-    assertThat(cinema.get()).isNotNull();
-    assertThat(cinema.get().getId()).isEqualTo(id);
-    assertThat(cinema.get().getName()).isEqualTo(createCinemaCommand.name);
-    assertThat(cinema.get().getCity()).isEqualTo(createCinemaCommand.city);
+    Cinema cinema = cinemaRepository.get(id);
+    assertThat(cinema).isNotNull();
+    assertThat(cinema.getId()).isEqualTo(id);
+    assertThat(cinema.getName()).isEqualTo(createCinemaCommand.name);
+    assertThat(cinema.getCity()).isEqualTo(createCinemaCommand.city);
   }
 
   @Test
@@ -56,11 +55,11 @@ public class CommandsTest {
 
     String id = commandGateway.execute(createMovieCommand);
 
-    Optional<Movie> movie = movieRepository.get(id);
-    assertThat(movie.get()).isNotNull();
-    assertThat(movie.get().getId()).isEqualTo(id);
-    assertThat(movie.get().getTitle()).isEqualTo(createMovieCommand.title);
-    assertThat(movie.get().getDescription()).isEqualTo(createMovieCommand.description);
+    Movie movie = movieRepository.get(id);
+    assertThat(movie).isNotNull();
+    assertThat(movie.getId()).isEqualTo(id);
+    assertThat(movie.getTitle()).isEqualTo(createMovieCommand.title);
+    assertThat(movie.getDescription()).isEqualTo(createMovieCommand.description);
   }
 
   @Test
@@ -69,15 +68,14 @@ public class CommandsTest {
 
     String id = commandGateway.execute(createShowCommand);
 
-    Optional<Show> show = showRepository.get(id);
-    assertThat(show.get()).isNotNull();
-    assertThat(show.get().getId()).isEqualTo(id);
-    assertThat(show.get().getReservations().isEmpty());
-    assertThat(show.get().getMovie().getId()).isEqualTo(createShowCommand.movieId);
-    assertThat(show.get().getCinemaHall().getCinema().getId())
-        .isEqualTo(createShowCommand.cinemaId);
-    assertThat(show.get().getTicketPrices()).isEqualTo(createShowCommand.tickets);
-    assertThat(show.get().getTime()).isEqualTo(createShowCommand.time);
+    Show show = showRepository.get(id);
+    assertThat(show).isNotNull();
+    assertThat(show.getId()).isEqualTo(id);
+    assertThat(show.getReservations().isEmpty());
+    assertThat(show.getMovie().getId()).isEqualTo(createShowCommand.movieId);
+    assertThat(show.getCinemaHall().getCinema().getId()).isEqualTo(createShowCommand.cinemaId);
+    assertThat(show.getTicketPrices()).isEqualTo(createShowCommand.tickets);
+    assertThat(show.getTime()).isEqualTo(Date.from(createShowCommand.time));
   }
 
   @Test
@@ -86,15 +84,15 @@ public class CommandsTest {
 
     String id = commandGateway.execute(createShowReservationCommand);
 
-    Optional<ShowReservation> showReservation = showReservationRepository.get(id);
-    assertThat(showReservation.get()).isNotNull();
-    assertThat(showReservation.get().getId()).isEqualTo(id);
-    assertThat(showReservation.get().getCustomer().get()).isNotNull();
-    assertThat(showReservation.get().getReservedSeats().size())
+    ShowReservation showReservation = showReservationRepository.get(id);
+    assertThat(showReservation).isNotNull();
+    assertThat(showReservation.getId()).isEqualTo(id);
+    assertThat(showReservation.getCustomer()).isNotNull();
+    assertThat(showReservation.getReservedSeats().size())
         .isEqualTo(createShowReservationCommand.reservedSeats.size());
-    assertThat(showReservation.get().getTickets().size()).isEqualTo(2);
-    assertThat(showReservation.get().getShowId()).isEqualTo(createShowReservationCommand.showId);
-    assertThat(showReservation.get().isNotPayed()).isTrue();
+    assertThat(showReservation.getTickets().size()).isEqualTo(2);
+    assertThat(showReservation.getShowId()).isEqualTo(createShowReservationCommand.showId);
+    assertThat(showReservation.getShowReservationStatus()).isEqualTo(CONFIRMED);
   }
 
   @Test
@@ -104,16 +102,15 @@ public class CommandsTest {
 
     String id = commandGateway.execute(createPayedShowReservationCommand);
 
-    Optional<ShowReservation> showReservation = showReservationRepository.get(id);
-    assertThat(showReservation.get()).isNotNull();
-    assertThat(showReservation.get().getId()).isEqualTo(id);
-    assertThat(showReservation.get().getCustomer()).isEqualTo(Optional.empty());
-    assertThat(showReservation.get().getReservedSeats().size())
+    ShowReservation showReservation = showReservationRepository.get(id);
+    assertThat(showReservation).isNotNull();
+    assertThat(showReservation.getId()).isEqualTo(id);
+    assertThat(showReservation.getCustomer()).isNotNull();
+    assertThat(showReservation.getReservedSeats().size())
         .isEqualTo(createPayedShowReservationCommand.reservedSeats.size());
-    assertThat(showReservation.get().getTickets().size()).isEqualTo(2);
-    assertThat(showReservation.get().getShowId())
-        .isEqualTo(createPayedShowReservationCommand.showId);
-    assertThat(showReservation.get().isNotPayed()).isFalse();
+    assertThat(showReservation.getTickets().size()).isEqualTo(2);
+    assertThat(showReservation.getShowId()).isEqualTo(createPayedShowReservationCommand.showId);
+    assertThat(showReservation.getShowReservationStatus()).isEqualTo(PAYED);
   }
 
   @Test
@@ -125,15 +122,15 @@ public class CommandsTest {
 
     String id = commandGateway.execute(cancelShowReservationCommand);
 
-    Optional<ShowReservation> showReservation = showReservationRepository.get(id);
-    assertThat(showReservation.get()).isNotNull();
+    ShowReservation showReservation = showReservationRepository.get(id);
+    assertThat(showReservation).isNotNull();
     assertThat(showReservationId).isEqualTo(id);
-    assertThat(showReservation.get().getId()).isEqualTo(id);
-    assertThat(showReservation.get().getReservedSeats().size())
+    assertThat(showReservation.getId()).isEqualTo(id);
+    assertThat(showReservation.getReservedSeats().size())
         .isEqualTo(createShowReservationCommand.reservedSeats.size());
-    assertThat(showReservation.get().getTickets().size()).isEqualTo(2);
-    assertThat(showReservation.get().getShowId()).isEqualTo(createShowReservationCommand.showId);
-    assertThat(showReservation.get().getShowReservationStatus()).isEqualTo(CANCELED);
+    assertThat(showReservation.getTickets().size()).isEqualTo(2);
+    assertThat(showReservation.getShowId()).isEqualTo(createShowReservationCommand.showId);
+    assertThat(showReservation.getShowReservationStatus()).isEqualTo(CANCELED);
   }
 
   @Test
@@ -145,15 +142,15 @@ public class CommandsTest {
 
     String id = commandGateway.execute(payShowReservationCommand);
 
-    Optional<ShowReservation> showReservation = showReservationRepository.get(id);
-    assertThat(showReservation.get()).isNotNull();
+    ShowReservation showReservation = showReservationRepository.get(id);
+    assertThat(showReservation).isNotNull();
     assertThat(showReservationId).isEqualTo(id);
-    assertThat(showReservation.get().getId()).isEqualTo(id);
-    assertThat(showReservation.get().getReservedSeats().size())
+    assertThat(showReservation.getId()).isEqualTo(id);
+    assertThat(showReservation.getReservedSeats().size())
         .isEqualTo(createShowReservationCommand.reservedSeats.size());
-    assertThat(showReservation.get().getTickets().size()).isEqualTo(2);
-    assertThat(showReservation.get().getShowId()).isEqualTo(createShowReservationCommand.showId);
-    assertThat(showReservation.get().getShowReservationStatus()).isEqualTo(PAYED);
+    assertThat(showReservation.getTickets().size()).isEqualTo(2);
+    assertThat(showReservation.getShowId()).isEqualTo(createShowReservationCommand.showId);
+    assertThat(showReservation.getShowReservationStatus()).isEqualTo(PAYED);
   }
 
   private PayShowReservationCommand payShowReservationCommand(String reservationId) {
@@ -206,21 +203,21 @@ public class CommandsTest {
             .lastName("Kowalski")
             .phoneNumer("423531642")
             .build();
-    createShowReservationCommand.reservedSeats = List.of(new Seat(2, 3), new Seat(4, 5));
+    createShowReservationCommand.reservedSeats = Set.of(new Seat(2, 3), new Seat(4, 5));
     CreateShowCommand createShowCommand = createShowCommand();
     createShowReservationCommand.showId = commandGateway.execute(createShowCommand);
-    createShowReservationCommand.tickets = List.of(new Ticket("extra", 1), new Ticket("normal", 1));
+    createShowReservationCommand.tickets = Set.of(new Ticket("extra", 1), new Ticket("normal", 1));
     return createShowReservationCommand;
   }
 
   private CreatePayedShowReservationCommand createPayedShowReservationCommand() {
     CreatePayedShowReservationCommand createPayedShowReservationCommand =
         new CreatePayedShowReservationCommand();
-    createPayedShowReservationCommand.reservedSeats = List.of(new Seat(2, 3), new Seat(4, 5));
+    createPayedShowReservationCommand.reservedSeats = Set.of(new Seat(2, 3), new Seat(4, 5));
     CreateShowCommand createShowCommand = createShowCommand();
     createPayedShowReservationCommand.showId = commandGateway.execute(createShowCommand);
     createPayedShowReservationCommand.tickets =
-        List.of(new Ticket("extra", 1), new Ticket("normal", 1));
+        Set.of(new Ticket("extra", 1), new Ticket("normal", 1));
     return createPayedShowReservationCommand;
   }
 }

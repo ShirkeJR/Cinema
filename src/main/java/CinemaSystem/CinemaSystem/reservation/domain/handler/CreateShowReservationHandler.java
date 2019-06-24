@@ -1,7 +1,6 @@
 package CinemaSystem.CinemaSystem.reservation.domain.handler;
 
 import CinemaSystem.CinemaSystem.administration.domain.ShowRepository;
-import CinemaSystem.CinemaSystem.administration.domain.exeptions.ShowNotFoundException;
 import CinemaSystem.CinemaSystem.core.Handler;
 import CinemaSystem.CinemaSystem.reservation.domain.ShowReservationFactory;
 import CinemaSystem.CinemaSystem.reservation.domain.ShowReservationRepository;
@@ -9,6 +8,7 @@ import CinemaSystem.CinemaSystem.reservation.domain.TicketOrder;
 import CinemaSystem.CinemaSystem.reservation.domain.commands.CreateShowReservationCommand;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
 
@@ -30,11 +30,13 @@ public class CreateShowReservationHandler implements Handler<CreateShowReservati
     this.showRepository = showRepository;
   }
 
+  @Transactional
   @Override
   public String handle(CreateShowReservationCommand cmd) {
-    var show = showRepository.get(cmd.showId).orElseThrow(ShowNotFoundException::new);
+    var show = showRepository.get(cmd.showId);
 
-    Set<TicketOrder> ticketOrderList = show.calculateTicketsPerSeats(cmd.tickets, cmd.reservedSeats.size());
+    Set<TicketOrder> ticketOrderList =
+        show.calculateTicketsPerSeats(cmd.tickets, cmd.reservedSeats.size());
 
     var showReservation = showReservationFactory.create(cmd, ticketOrderList);
     showReservationRepository.put(showReservation);

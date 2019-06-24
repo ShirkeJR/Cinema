@@ -1,15 +1,13 @@
 package CinemaSystem.CinemaSystem.administration.domain.handler;
 
-import CinemaSystem.CinemaSystem.administration.domain.CinemaRepository;
-import CinemaSystem.CinemaSystem.administration.domain.MovieRepository;
-import CinemaSystem.CinemaSystem.administration.domain.ShowFactory;
-import CinemaSystem.CinemaSystem.administration.domain.ShowRepository;
+import CinemaSystem.CinemaSystem.administration.domain.*;
 import CinemaSystem.CinemaSystem.administration.domain.commands.CreateShowCommand;
-import CinemaSystem.CinemaSystem.administration.domain.exeptions.CinemaNotFoundException;
-import CinemaSystem.CinemaSystem.administration.domain.exeptions.MovieNotFoundException;
 import CinemaSystem.CinemaSystem.core.Handler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.UUID;
 
 @Service
 public class CreateShowHandler implements Handler<CreateShowCommand, String> {
@@ -18,6 +16,9 @@ public class CreateShowHandler implements Handler<CreateShowCommand, String> {
   private final CinemaRepository cinemaRepository;
   private final MovieRepository movieRepository;
   private final ShowFactory showFactory;
+
+  private final int CINEMAHALL_ROWS = 20;
+  private final int CINEMAHALL_COLUMNS = 30;
 
   @Autowired
   public CreateShowHandler(
@@ -32,11 +33,14 @@ public class CreateShowHandler implements Handler<CreateShowCommand, String> {
     this.showFactory = showFactory;
   }
 
+  @Transactional
   @Override
   public String handle(CreateShowCommand cmd) {
-    var cinema = cinemaRepository.get(cmd.cinemaId).orElseThrow(CinemaNotFoundException::new);
-    var movie = movieRepository.get(cmd.movieId).orElseThrow(MovieNotFoundException::new);
-    var show = showFactory.create(cinema, movie, cmd);
+    var cinema = cinemaRepository.get(cmd.cinemaId);
+    var movie = movieRepository.get(cmd.movieId);
+    var cinemaHall = new CinemaHall(cinema, CINEMAHALL_ROWS, CINEMAHALL_COLUMNS);
+    var show =
+        showFactory.create(UUID.randomUUID().toString(), cinemaHall, movie, cmd.time, cmd.tickets);
     showRepository.put(show);
     return show.getId();
   }

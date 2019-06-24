@@ -2,7 +2,6 @@ package CinemaSystem.CinemaSystem.administration.domain.catolog;
 
 import CinemaSystem.CinemaSystem.administration.domain.Movie;
 import CinemaSystem.CinemaSystem.administration.domain.MovieRepository;
-import CinemaSystem.CinemaSystem.administration.domain.exeptions.MovieNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,7 +22,7 @@ public class MovieCatalog {
   }
 
   public MovieDto get(String id) {
-    return convertCinemaToDto(movieRepository.get(id).orElseThrow(MovieNotFoundException::new));
+    return convertCinemaToDto(movieRepository.get(id));
   }
 
   public List<MovieDto> getAll() {

@@ -16,11 +16,7 @@ public class MovieTest {
   @Test
   void createsMovie() {
     var cmd = prepareCreateMovieCommand();
-    var cinema = Movie.builder()
-            .id(id)
-            .title(cmd.title)
-            .description(cmd.description)
-            .build();
+    var cinema = Movie.builder().id(id).title(cmd.title).description(cmd.description).build();
 
     assertThat(cinema.getId()).isEqualTo(id);
     assertThat(cinema.getTitle()).isEqualTo(title);

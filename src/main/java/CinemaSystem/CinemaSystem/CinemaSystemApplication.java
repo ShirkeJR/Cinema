@@ -2,7 +2,6 @@ package CinemaSystem.CinemaSystem;
 
 import CinemaSystem.CinemaSystem.core.CommandGateway;
 import CinemaSystem.CinemaSystem.core.Handler;
-import org.modelmapper.ModelMapper;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
@@ -31,10 +30,5 @@ public class CinemaSystemApplication {
               commandGateway.registerHandler(cmdClass, handler);
             });
     return commandGateway;
-  }
-
-  @Bean
-  public ModelMapper modelMapper() {
-    return new ModelMapper();
   }
 }

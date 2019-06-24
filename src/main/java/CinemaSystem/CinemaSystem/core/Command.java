@@ -1,4 +1,3 @@
 package CinemaSystem.CinemaSystem.core;
 
-public interface Command {
-}
+public interface Command {}
