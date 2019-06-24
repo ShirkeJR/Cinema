@@ -1,7 +1,8 @@
-package CinemaSystem.CinemaSystem.administration.adapters.db;
+package CinemaSystem.CinemaSystem.administration.adapters.db.inMemory;
 
 import CinemaSystem.CinemaSystem.administration.domain.Movie;
 import CinemaSystem.CinemaSystem.administration.domain.MovieRepository;
+import CinemaSystem.CinemaSystem.administration.domain.exeptions.MovieNotFoundException;
 import com.google.common.collect.Lists;
 import org.springframework.stereotype.Repository;
 
@@ -17,7 +18,7 @@ public class InMemoryMovieRepository implements MovieRepository {
   @Override
   public Optional<Movie> get(String id) {
     if (!db.containsKey(id)) {
-      //throw new IllegalArgumentException("No movie by Id");
+      throw new MovieNotFoundException(id);
     }
     return Optional.of(db.get(id));
   }

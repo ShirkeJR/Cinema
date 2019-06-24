@@ -1,7 +1,8 @@
-package CinemaSystem.CinemaSystem.reservation.adapters.db;
+package CinemaSystem.CinemaSystem.reservation.adapters.db.inMemory;
 
 import CinemaSystem.CinemaSystem.reservation.domain.ShowReservation;
 import CinemaSystem.CinemaSystem.reservation.domain.ShowReservationRepository;
+import CinemaSystem.CinemaSystem.reservation.domain.exceptions.ShowReservationNotFoundException;
 import org.springframework.stereotype.Repository;
 
 import java.util.HashMap;
@@ -16,7 +17,7 @@ public class InMemoryShowReservationRepository implements ShowReservationReposit
     @Override
     public Optional<ShowReservation> get(String id) {
         if (!db.containsKey(id)) {
-            //throw new IllegalArgumentException("No cinema by Id");
+            throw new ShowReservationNotFoundException(id);
         }
         return Optional.of(db.get(id));
     }

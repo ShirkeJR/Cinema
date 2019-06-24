@@ -1,7 +1,8 @@
-package CinemaSystem.CinemaSystem.administration.adapters.db;
+package CinemaSystem.CinemaSystem.administration.adapters.db.inMemory;
 
 import CinemaSystem.CinemaSystem.administration.domain.Show;
 import CinemaSystem.CinemaSystem.administration.domain.ShowRepository;
+import CinemaSystem.CinemaSystem.administration.domain.exeptions.ShowNotFoundException;
 import com.google.common.collect.Lists;
 import org.springframework.stereotype.Repository;
 
@@ -17,7 +18,7 @@ public class InMemoryShowRepository implements ShowRepository {
   @Override
   public Optional<Show> get(String id) {
     if (!db.containsKey(id)) {
-      //throw new IllegalArgumentException("No show by Id");
+      throw new ShowNotFoundException(id);
     }
     return Optional.of(db.get(id));
   }

@@ -2,6 +2,7 @@ package CinemaSystem.CinemaSystem.administration.domain;
 
 import CinemaSystem.CinemaSystem.administration.domain.commands.CreateShowCommand;
 import CinemaSystem.CinemaSystem.administration.domain.exeptions.InvalidSeatAndTicketCountException;
+import CinemaSystem.CinemaSystem.administration.domain.ticketCalculator.TicketCalculator;
 import CinemaSystem.CinemaSystem.reservation.domain.Seat;
 import CinemaSystem.CinemaSystem.reservation.domain.ShowReservation;
 import CinemaSystem.CinemaSystem.reservation.domain.Ticket;
@@ -52,7 +53,7 @@ public class ShowTest {
   @Mock
   private ShowReservation showReservation;
   @Mock
-  private ShowTicketCalculator showTicketCalculator;
+  private TicketCalculator ticketCalculator;
 
   @BeforeEach
   void setUp() {
@@ -62,7 +63,7 @@ public class ShowTest {
   @Test
   void createsShow() {
     var cmd = prepareCreateShowCommand();
-    var show = new Show(id, movie, cinemaHall, cmd.time, cmd.tickets, showTicketCalculator);
+    var show = new Show(id, movie, cinemaHall, cmd.time, cmd.tickets, ticketCalculator);
 
     assertThat(show.getId()).isEqualTo(id);
     assertThat(show.getCinemaHall()).isEqualTo(cinemaHall);
@@ -106,7 +107,7 @@ public class ShowTest {
 
   private Show createShow() {
     var cmd = prepareCreateShowCommand();
-    return new Show(id, movie, cinemaHall, cmd.time, cmd.tickets, showTicketCalculator);
+    return new Show(id, movie, cinemaHall, cmd.time, cmd.tickets, ticketCalculator);
   }
 
   @Test

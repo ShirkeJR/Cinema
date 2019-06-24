@@ -1,4 +1,4 @@
-package CinemaSystem.CinemaSystem.administration.domain;
+package CinemaSystem.CinemaSystem.administration.domain.ticketCalculator;
 
 import CinemaSystem.CinemaSystem.administration.domain.exeptions.IllegalTicketTypeException;
 import CinemaSystem.CinemaSystem.reservation.domain.Ticket;
@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.Set;
 
 @Component
-public class ShowTicketCalculator {
+public class TicketCalculator {
 
   public Set<TicketOrder> calculateTickets(Map<String, BigDecimal> ticketPrices, List<Ticket> tickets) {
     Set<TicketOrder> ticketOrders = new HashSet<>();

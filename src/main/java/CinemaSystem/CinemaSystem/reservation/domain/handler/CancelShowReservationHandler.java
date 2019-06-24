@@ -1,9 +1,11 @@
 package CinemaSystem.CinemaSystem.reservation.domain.handler;
 
 import CinemaSystem.CinemaSystem.administration.domain.ShowRepository;
+import CinemaSystem.CinemaSystem.administration.domain.exeptions.ShowNotFoundException;
 import CinemaSystem.CinemaSystem.core.Handler;
 import CinemaSystem.CinemaSystem.reservation.domain.ShowReservationRepository;
 import CinemaSystem.CinemaSystem.reservation.domain.commands.CancelShowReservationCommand;
+import CinemaSystem.CinemaSystem.reservation.domain.exceptions.ShowReservationNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,9 +25,9 @@ public class CancelShowReservationHandler implements Handler<CancelShowReservati
   @Override
   public String handle(CancelShowReservationCommand cmd) {
     var showReservation =
-        showReservationRepository.get(cmd.reservationId).orElseThrow(IllegalArgumentException::new);
+        showReservationRepository.get(cmd.reservationId).orElseThrow(ShowReservationNotFoundException::new);
     var show =
-        showRepository.get(showReservation.getShowId()).orElseThrow(IllegalArgumentException::new);
+        showRepository.get(showReservation.getShowId()).orElseThrow(ShowNotFoundException::new);
 
     show.unReserveReservation(showReservation);
     showRepository.put(show);

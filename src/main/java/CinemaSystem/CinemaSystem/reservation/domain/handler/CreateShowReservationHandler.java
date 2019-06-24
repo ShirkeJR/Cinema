@@ -1,6 +1,7 @@
 package CinemaSystem.CinemaSystem.reservation.domain.handler;
 
 import CinemaSystem.CinemaSystem.administration.domain.ShowRepository;
+import CinemaSystem.CinemaSystem.administration.domain.exeptions.ShowNotFoundException;
 import CinemaSystem.CinemaSystem.core.Handler;
 import CinemaSystem.CinemaSystem.reservation.domain.ShowReservationFactory;
 import CinemaSystem.CinemaSystem.reservation.domain.ShowReservationRepository;
@@ -31,7 +32,7 @@ public class CreateShowReservationHandler implements Handler<CreateShowReservati
 
   @Override
   public String handle(CreateShowReservationCommand cmd) {
-    var show = showRepository.get(cmd.showId).orElseThrow(IllegalArgumentException::new);
+    var show = showRepository.get(cmd.showId).orElseThrow(ShowNotFoundException::new);
 
     Set<TicketOrder> ticketOrderList = show.calculateTicketsPerSeats(cmd.tickets, cmd.reservedSeats.size());
 

@@ -1,4 +1,4 @@
-package CinemaSystem.CinemaSystem.administration.adapters.rest;
+package CinemaSystem.CinemaSystem.reservation.adapters.rest;
 
 import CinemaSystem.CinemaSystem.administration.domain.exeptions.*;
 import org.springframework.http.HttpStatus;
@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ControllerAdvice
-public class ErrorHandlers {
+public class ErrorHandlersForReservation {
 
     @ExceptionHandler(value = IllegalTicketCountException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)

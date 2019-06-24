@@ -1,11 +1,12 @@
 package CinemaSystem.CinemaSystem.administration.adapters.rest;
 
 import CinemaSystem.CinemaSystem.administration.domain.CinemaHallSeat;
-import CinemaSystem.CinemaSystem.administration.domain.Show;
 import CinemaSystem.CinemaSystem.administration.domain.catolog.ShowCatalog;
+import CinemaSystem.CinemaSystem.administration.domain.catolog.ShowDto;
 import CinemaSystem.CinemaSystem.administration.domain.commands.CreateShowCommand;
 import CinemaSystem.CinemaSystem.core.CommandGateway;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,22 +26,23 @@ public class ShowController {
   }
 
   @PostMapping
+  @ResponseStatus(HttpStatus.CREATED)
   public String create(@RequestBody CreateShowCommand cmd) {
     return commandGateway.execute(cmd).toString();
   }
 
   @GetMapping
-  public List<Show> getAll() {
+  public List<ShowDto> getAll() {
     return showCatalog.getAll();
   }
 
   @GetMapping("/{id}")
-  public Show get(@PathVariable String id) {
+  public ShowDto get(@PathVariable String id) {
     return showCatalog.get(id);
   }
 
   @GetMapping("/{id}/seats")
-  public List<CinemaHallSeat> getFreeSeats(@PathVariable String id){
+  public List<CinemaHallSeat> getFreeSeats(@PathVariable String id) {
     return showCatalog.getFreeSeats(id);
   }
 }

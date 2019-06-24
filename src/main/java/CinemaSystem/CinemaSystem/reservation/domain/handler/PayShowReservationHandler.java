@@ -3,6 +3,7 @@ package CinemaSystem.CinemaSystem.reservation.domain.handler;
 import CinemaSystem.CinemaSystem.core.Handler;
 import CinemaSystem.CinemaSystem.reservation.domain.ShowReservationRepository;
 import CinemaSystem.CinemaSystem.reservation.domain.commands.PayShowReservationCommand;
+import CinemaSystem.CinemaSystem.reservation.domain.exceptions.ShowReservationNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +20,7 @@ public class PayShowReservationHandler implements Handler<PayShowReservationComm
     @Override
     public String handle(PayShowReservationCommand cmd) {
         var showReservation = showReservationRepository.get(cmd.reservationId).
-                orElseThrow(IllegalArgumentException::new);
+                orElseThrow(ShowReservationNotFoundException::new);
 
         showReservation.pay();
         showReservationRepository.put(showReservation);

@@ -2,6 +2,7 @@ package CinemaSystem.CinemaSystem.administration.domain;
 
 import CinemaSystem.CinemaSystem.administration.domain.exeptions.IllegalTicketCountException;
 import CinemaSystem.CinemaSystem.administration.domain.exeptions.InvalidSeatAndTicketCountException;
+import CinemaSystem.CinemaSystem.administration.domain.ticketCalculator.TicketCalculator;
 import CinemaSystem.CinemaSystem.reservation.domain.ShowReservation;
 import CinemaSystem.CinemaSystem.reservation.domain.Ticket;
 import CinemaSystem.CinemaSystem.reservation.domain.TicketOrder;
@@ -28,17 +29,17 @@ public class Show {
 
   private Map<String, BigDecimal> ticketPrices;
 
-  private ShowTicketCalculator ticketCalculator;
+  private TicketCalculator ticketCalculator;
 
   private List<ShowReservation> reservations = new ArrayList<>();
 
   public Show(
-      String id,
-      Movie movie,
-      CinemaHall cinemaHall,
-      Instant time,
-      Map<String, BigDecimal> ticketPrices,
-      ShowTicketCalculator ticketCalculator) {
+          String id,
+          Movie movie,
+          CinemaHall cinemaHall,
+          Instant time,
+          Map<String, BigDecimal> ticketPrices,
+          TicketCalculator ticketCalculator) {
     this.id = id;
     this.movie = movie;
     this.cinemaHall = cinemaHall;

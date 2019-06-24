@@ -1,6 +1,7 @@
 package CinemaSystem.CinemaSystem.administration.domain;
 
 import CinemaSystem.CinemaSystem.administration.domain.exeptions.IllegalTicketTypeException;
+import CinemaSystem.CinemaSystem.administration.domain.ticketCalculator.TicketCalculator;
 import CinemaSystem.CinemaSystem.reservation.domain.Ticket;
 import CinemaSystem.CinemaSystem.reservation.domain.TicketOrder;
 import org.junit.jupiter.api.Test;
@@ -14,7 +15,7 @@ import java.util.Set;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class ShowTicketCalculatorTest {
+public class TicketCalculatorTest {
 
   private final Map<String, BigDecimal> ticketPrices =
       Map.of(
@@ -22,14 +23,14 @@ public class ShowTicketCalculatorTest {
           "extra", new BigDecimal(30));
   private final List<Ticket> tickets = List.of(new Ticket("normal", 2), new Ticket("extra", 1));
 
-  private final ShowTicketCalculator showTicketCalculator = new ShowTicketCalculator();
+  private final TicketCalculator ticketCalculator = new TicketCalculator();
 
   @Test
   void returnsTwoTicketOrders() {
     var countOfTheSameTickets = 2;
     var canountOfTickets = 3;
 
-    Set<TicketOrder> ticketOrders = showTicketCalculator.calculateTickets(ticketPrices, tickets);
+    Set<TicketOrder> ticketOrders = ticketCalculator.calculateTickets(ticketPrices, tickets);
 
     assertThat(ticketOrders).hasSize(countOfTheSameTickets);
     assertThat(sumTickets(ticketOrders)).isEqualTo(canountOfTickets);
@@ -43,7 +44,7 @@ public class ShowTicketCalculatorTest {
   void expectsIllegalTicketTypeExceptionWhenShowDoesntContainTicketType() {
     var wrongTickets = List.of(new Ticket("student", 2));
 
-    Executable executable = () -> showTicketCalculator.calculateTickets(ticketPrices, wrongTickets);
+    Executable executable = () -> ticketCalculator.calculateTickets(ticketPrices, wrongTickets);
 
     assertThrows(IllegalTicketTypeException.class, executable);
   }

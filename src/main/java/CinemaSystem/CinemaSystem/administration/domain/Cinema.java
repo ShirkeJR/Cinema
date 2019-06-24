@@ -10,6 +10,4 @@ public class Cinema {
   private String id;
   private String name;
   private String city;
-
-
 }

@@ -1,10 +1,11 @@
 package CinemaSystem.CinemaSystem.administration.adapters.rest;
 
-import CinemaSystem.CinemaSystem.administration.domain.Movie;
 import CinemaSystem.CinemaSystem.administration.domain.catolog.MovieCatalog;
+import CinemaSystem.CinemaSystem.administration.domain.catolog.MovieDto;
 import CinemaSystem.CinemaSystem.administration.domain.commands.CreateMovieCommand;
 import CinemaSystem.CinemaSystem.core.CommandGateway;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,17 +25,18 @@ public class MovieController {
   }
 
   @PostMapping
+  @ResponseStatus(HttpStatus.CREATED)
   public String create(@RequestBody CreateMovieCommand cmd) {
     return commandGateway.execute(cmd).toString();
   }
 
   @GetMapping
-  public List<Movie> getAll() {
+  public List<MovieDto> getAll() {
     return movieCatalog.getAll();
   }
 
   @GetMapping("/{id}")
-  public Movie get(@PathVariable String id) {
+  public MovieDto get(@PathVariable String id) {
     return movieCatalog.get(id);
   }
 }

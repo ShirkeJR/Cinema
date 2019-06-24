@@ -1,6 +1,7 @@
 package CinemaSystem.CinemaSystem.administration.domain;
 
 import CinemaSystem.CinemaSystem.administration.domain.commands.CreateShowCommand;
+import CinemaSystem.CinemaSystem.administration.domain.ticketCalculator.TicketCalculator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -11,11 +12,11 @@ public class ShowFactory {
 
     private final int cinemaHallRows = 20;
     private final int cinemaHallColumns = 30;
-    private final ShowTicketCalculator showTicketCalculator;
+    private final TicketCalculator ticketCalculator;
 
     @Autowired
-    public ShowFactory(ShowTicketCalculator showTicketCalculator) {
-        this.showTicketCalculator = showTicketCalculator;
+    public ShowFactory(TicketCalculator ticketCalculator) {
+        this.ticketCalculator = ticketCalculator;
     }
 
     public Show create(Cinema cinema, Movie movie, CreateShowCommand cmd) {
@@ -24,6 +25,6 @@ public class ShowFactory {
                 new CinemaHall(cinema, cinemaHallRows, cinemaHallColumns),
                 cmd.time,
                 cmd.tickets,
-                showTicketCalculator);
+                ticketCalculator);
     }
 }

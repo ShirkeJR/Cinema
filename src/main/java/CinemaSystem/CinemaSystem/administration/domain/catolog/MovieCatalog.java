@@ -3,26 +3,36 @@ package CinemaSystem.CinemaSystem.administration.domain.catolog;
 import CinemaSystem.CinemaSystem.administration.domain.Movie;
 import CinemaSystem.CinemaSystem.administration.domain.MovieRepository;
 import CinemaSystem.CinemaSystem.administration.domain.exeptions.MovieNotFoundException;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class MovieCatalog {
 
-    private final MovieRepository movieRepository;
+  private final MovieRepository movieRepository;
 
-    @Autowired
-    public MovieCatalog(MovieRepository movieRepository) {
-        this.movieRepository = movieRepository;
-    }
+  @Autowired private ModelMapper modelMapper;
 
-    public Movie get(String id){
-        return movieRepository.get(id).orElseThrow(MovieNotFoundException::new);
-    }
+  @Autowired
+  public MovieCatalog(MovieRepository movieRepository) {
+    this.movieRepository = movieRepository;
+  }
 
-    public List<Movie> getAll(){
-        return movieRepository.getAll();
-    }
+  public MovieDto get(String id) {
+    return convertCinemaToDto(movieRepository.get(id).orElseThrow(MovieNotFoundException::new));
+  }
+
+  public List<MovieDto> getAll() {
+    return movieRepository.getAll().stream()
+        .map(this::convertCinemaToDto)
+        .collect(Collectors.toList());
+  }
+
+  private MovieDto convertCinemaToDto(Movie movie) {
+    return modelMapper.map(movie, MovieDto.class);
+  }
 }

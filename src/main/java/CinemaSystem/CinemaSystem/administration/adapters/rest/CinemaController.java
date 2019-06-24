@@ -1,10 +1,11 @@
 package CinemaSystem.CinemaSystem.administration.adapters.rest;
 
-import CinemaSystem.CinemaSystem.administration.domain.Cinema;
 import CinemaSystem.CinemaSystem.administration.domain.catolog.CinemaCatalog;
+import CinemaSystem.CinemaSystem.administration.domain.catolog.CinemaDto;
 import CinemaSystem.CinemaSystem.administration.domain.commands.CreateCinemaCommand;
 import CinemaSystem.CinemaSystem.core.CommandGateway;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,17 +25,18 @@ public class CinemaController {
   }
 
   @PostMapping
+  @ResponseStatus(HttpStatus.CREATED)
   public String create(@RequestBody CreateCinemaCommand cmd) {
     return commandGateway.execute(cmd).toString();
   }
 
   @GetMapping
-  public List<Cinema> getAll() {
+  public List<CinemaDto> getAll() {
     return catalog.getAll();
   }
 
   @GetMapping("/{id}")
-  public Cinema get(@PathVariable String id) {
+  public CinemaDto get(@PathVariable String id) {
     return catalog.get(id);
   }
 }
