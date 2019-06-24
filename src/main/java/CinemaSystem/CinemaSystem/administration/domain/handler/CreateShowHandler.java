@@ -1,15 +1,18 @@
 package CinemaSystem.CinemaSystem.administration.domain.handler;
 
-import CinemaSystem.CinemaSystem.administration.domain.*;
+import CinemaSystem.CinemaSystem.administration.domain.CinemaRepository;
+import CinemaSystem.CinemaSystem.administration.domain.MovieRepository;
+import CinemaSystem.CinemaSystem.administration.domain.ShowFactory;
+import CinemaSystem.CinemaSystem.administration.domain.ShowRepository;
 import CinemaSystem.CinemaSystem.administration.domain.commands.CreateShowCommand;
+import CinemaSystem.CinemaSystem.administration.domain.exeptions.CinemaNotFoundException;
+import CinemaSystem.CinemaSystem.administration.domain.exeptions.MovieNotFoundException;
 import CinemaSystem.CinemaSystem.core.Handler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.UUID;
-
 @Service
-public class CreateShowHandler implements Handler<CreateShowCommand, UUID> {
+public class CreateShowHandler implements Handler<CreateShowCommand, String> {
 
   private final ShowRepository showRepository;
   private final CinemaRepository cinemaRepository;
@@ -30,9 +33,9 @@ public class CreateShowHandler implements Handler<CreateShowCommand, UUID> {
   }
 
   @Override
-  public UUID handle(CreateShowCommand cmd) {
-    var cinema = cinemaRepository.get(cmd.cinemaId).orElseThrow(IllegalArgumentException::new);
-    var movie = movieRepository.get(cmd.movieId).orElseThrow(IllegalArgumentException::new);
+  public String handle(CreateShowCommand cmd) {
+    var cinema = cinemaRepository.get(cmd.cinemaId).orElseThrow(CinemaNotFoundException::new);
+    var movie = movieRepository.get(cmd.movieId).orElseThrow(MovieNotFoundException::new);
     var show = showFactory.create(cinema, movie, cmd);
     showRepository.put(show);
     return show.getId();

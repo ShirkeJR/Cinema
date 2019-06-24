@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import java.util.UUID;
 
 @Service
-public class CreateCinemaHandler implements Handler<CreateCinemaCommand, UUID> {
+public class CreateCinemaHandler implements Handler<CreateCinemaCommand, String> {
 
     private final CinemaRepository cinemaRepository;
 
@@ -20,9 +20,9 @@ public class CreateCinemaHandler implements Handler<CreateCinemaCommand, UUID> {
     }
 
     @Override
-    public UUID handle(CreateCinemaCommand cmd) {
+    public String handle(CreateCinemaCommand cmd) {
         var cinema = Cinema.builder()
-                .id(UUID.randomUUID())
+                .id(UUID.randomUUID().toString())
                 .name(cmd.name)
                 .city(cmd.city)
                 .build();

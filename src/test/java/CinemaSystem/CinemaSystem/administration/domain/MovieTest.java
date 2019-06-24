@@ -1,16 +1,15 @@
-package CinemaSystem.CinemaSystem.administration;
+package CinemaSystem.CinemaSystem.administration.domain;
 
-import CinemaSystem.CinemaSystem.administration.domain.Movie;
 import CinemaSystem.CinemaSystem.administration.domain.commands.CreateMovieCommand;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-
 import java.util.UUID;
+
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 public class MovieTest {
 
-  private final UUID id = UUID.randomUUID();
+  private final String id = UUID.randomUUID().toString();
   private final String title = "Szczęki";
   private final String desc = "Se pływa rekin";
 

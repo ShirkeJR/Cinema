@@ -1,10 +1,12 @@
 package CinemaSystem.CinemaSystem.administration.domain;
 
+import CinemaSystem.CinemaSystem.administration.domain.exeptions.SeatIsAlreadyBlockedException;
 import lombok.Getter;
 
 import java.util.Objects;
 
-import static CinemaSystem.CinemaSystem.administration.domain.CinemaHallSeat.HallSeatStatus.*;
+import static CinemaSystem.CinemaSystem.administration.domain.CinemaHallSeat.HallSeatStatus.BLOCKED;
+import static CinemaSystem.CinemaSystem.administration.domain.CinemaHallSeat.HallSeatStatus.FREE;
 
 @Getter
 public class CinemaHallSeat {
@@ -20,11 +22,15 @@ public class CinemaHallSeat {
 
   public void blockIfPossible() {
     if (status == FREE) status = BLOCKED;
-    else throw new IllegalArgumentException("Seat is already blocked");
+    else throw new SeatIsAlreadyBlockedException("Seat is already blocked");
   }
 
   public void freeSeat() {
     status = FREE;
+  }
+
+  public boolean isFree(){
+    return status == FREE;
   }
 
   public enum HallSeatStatus {

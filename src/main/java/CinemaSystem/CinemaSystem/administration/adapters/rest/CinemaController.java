@@ -8,10 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.UUID;
 
 @RestController
-@CrossOrigin(exposedHeaders = "errors, content-type")
+@CrossOrigin(exposedHeaders = "exeptions, content-type")
 @RequestMapping("/api/cinema")
 public class CinemaController {
 
@@ -35,7 +34,7 @@ public class CinemaController {
   }
 
   @GetMapping("/{id}")
-  public Cinema get(@PathVariable UUID id) {
+  public Cinema get(@PathVariable String id) {
     return catalog.get(id);
   }
 }

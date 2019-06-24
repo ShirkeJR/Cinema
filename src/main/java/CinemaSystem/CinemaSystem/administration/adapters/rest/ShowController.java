@@ -1,6 +1,7 @@
 package CinemaSystem.CinemaSystem.administration.adapters.rest;
 
-import CinemaSystem.CinemaSystem.administration.domain.*;
+import CinemaSystem.CinemaSystem.administration.domain.CinemaHallSeat;
+import CinemaSystem.CinemaSystem.administration.domain.Show;
 import CinemaSystem.CinemaSystem.administration.domain.catolog.ShowCatalog;
 import CinemaSystem.CinemaSystem.administration.domain.commands.CreateShowCommand;
 import CinemaSystem.CinemaSystem.core.CommandGateway;
@@ -8,10 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.UUID;
 
 @RestController
-@CrossOrigin(exposedHeaders = "errors, content-type")
+@CrossOrigin(exposedHeaders = "exeptions, content-type")
 @RequestMapping("/api/show")
 public class ShowController {
 
@@ -35,7 +35,12 @@ public class ShowController {
   }
 
   @GetMapping("/{id}")
-  public Show get(@PathVariable UUID id) {
+  public Show get(@PathVariable String id) {
     return showCatalog.get(id);
+  }
+
+  @GetMapping("/{id}/seats")
+  public List<CinemaHallSeat> getFreeSeats(@PathVariable String id){
+    return showCatalog.getFreeSeats(id);
   }
 }

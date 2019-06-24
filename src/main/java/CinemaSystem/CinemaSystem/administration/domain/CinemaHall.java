@@ -1,5 +1,6 @@
 package CinemaSystem.CinemaSystem.administration.domain;
 
+import CinemaSystem.CinemaSystem.administration.domain.exeptions.InvalidSeatException;
 import CinemaSystem.CinemaSystem.reservation.domain.Seat;
 import lombok.Getter;
 
@@ -8,6 +9,7 @@ import javax.persistence.ManyToOne;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 
 @Getter
@@ -36,7 +38,7 @@ public class CinemaHall {
     }
   }
 
-  public void blockSeats(List<Seat> occupiedSeats) {
+  public void blockSeatsIfPossible(Set<Seat> occupiedSeats) {
     occupiedSeats.forEach(seat -> findSeat(seat).blockIfPossible());
   }
 
@@ -44,14 +46,20 @@ public class CinemaHall {
     return cinemaHallSeats.stream()
         .filter(cinemaHallSeat -> isSearchedSeat(seat, cinemaHallSeat))
         .findFirst()
-        .orElseThrow(IllegalArgumentException::new);
+        .orElseThrow(InvalidSeatException::new);
   }
 
   private boolean isSearchedSeat(Seat seat, CinemaHallSeat cinemaHallSeat) {
     return cinemaHallSeat.getCol() == seat.getCol() && cinemaHallSeat.getRow() == seat.getRow();
   }
 
-  public void unBlockSeats(List<Seat> unBlockedSeats) {
+  public void unBlockSeatsIfPossible(Set<Seat> unBlockedSeats) {
     unBlockedSeats.forEach(seat -> findSeat(seat).freeSeat());
+  }
+
+  public List<CinemaHallSeat> calculateFreeSeats(){
+    return cinemaHallSeats.stream()
+            .filter(CinemaHallSeat::isFree)
+            .collect(Collectors.toList());
   }
 }

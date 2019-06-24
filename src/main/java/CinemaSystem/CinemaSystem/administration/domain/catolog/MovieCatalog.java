@@ -2,11 +2,11 @@ package CinemaSystem.CinemaSystem.administration.domain.catolog;
 
 import CinemaSystem.CinemaSystem.administration.domain.Movie;
 import CinemaSystem.CinemaSystem.administration.domain.MovieRepository;
+import CinemaSystem.CinemaSystem.administration.domain.exeptions.MovieNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.UUID;
 
 @Service
 public class MovieCatalog {
@@ -18,8 +18,8 @@ public class MovieCatalog {
         this.movieRepository = movieRepository;
     }
 
-    public Movie get(UUID id){
-        return movieRepository.get(id).orElseThrow(IllegalArgumentException::new);
+    public Movie get(String id){
+        return movieRepository.get(id).orElseThrow(MovieNotFoundException::new);
     }
 
     public List<Movie> getAll(){

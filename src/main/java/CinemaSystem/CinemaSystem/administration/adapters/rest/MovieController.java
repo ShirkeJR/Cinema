@@ -1,7 +1,6 @@
 package CinemaSystem.CinemaSystem.administration.adapters.rest;
 
 import CinemaSystem.CinemaSystem.administration.domain.Movie;
-import CinemaSystem.CinemaSystem.administration.domain.MovieRepository;
 import CinemaSystem.CinemaSystem.administration.domain.catolog.MovieCatalog;
 import CinemaSystem.CinemaSystem.administration.domain.commands.CreateMovieCommand;
 import CinemaSystem.CinemaSystem.core.CommandGateway;
@@ -9,10 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.UUID;
 
 @RestController
-@CrossOrigin(exposedHeaders = "errors, content-type")
+@CrossOrigin(exposedHeaders = "exeptions, content-type")
 @RequestMapping("/api/movie")
 public class MovieController {
 
@@ -36,7 +34,7 @@ public class MovieController {
   }
 
   @GetMapping("/{id}")
-  public Movie get(@PathVariable UUID id) {
+  public Movie get(@PathVariable String id) {
     return movieCatalog.get(id);
   }
 }

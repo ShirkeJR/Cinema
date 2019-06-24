@@ -1,6 +1,5 @@
-package CinemaSystem.CinemaSystem.administration;
+package CinemaSystem.CinemaSystem.administration.domain;
 
-import CinemaSystem.CinemaSystem.administration.domain.Cinema;
 import CinemaSystem.CinemaSystem.administration.domain.commands.CreateCinemaCommand;
 import org.junit.jupiter.api.Test;
 
@@ -10,7 +9,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 public class CinemaTest {
 
-  private final UUID id = UUID.randomUUID();
+  private final String id = UUID.randomUUID().toString();
   private final String city = "Lublin";
   private final String name = "Cinema";
 

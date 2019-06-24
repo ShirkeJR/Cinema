@@ -1,9 +1,13 @@
 package CinemaSystem.CinemaSystem.reservation.domain;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class ShowReservationDetails {
+@Builder
+@AllArgsConstructor
+public class Customer {
 
     private String email;
     private String phoneNumer;

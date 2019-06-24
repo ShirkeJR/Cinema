@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import java.util.UUID;
 
 @Service
-public class CreateMovieHandler implements Handler<CreateMovieCommand, UUID> {
+public class CreateMovieHandler implements Handler<CreateMovieCommand, String> {
   private final MovieRepository movieRepository;
 
   @Autowired
@@ -19,9 +19,9 @@ public class CreateMovieHandler implements Handler<CreateMovieCommand, UUID> {
   }
 
   @Override
-  public UUID handle(CreateMovieCommand cmd) {
+  public String handle(CreateMovieCommand cmd) {
     var movie = Movie.builder()
-            .id(UUID.randomUUID())
+            .id(UUID.randomUUID().toString())
             .title(cmd.title)
             .description(cmd.description)
             .build();

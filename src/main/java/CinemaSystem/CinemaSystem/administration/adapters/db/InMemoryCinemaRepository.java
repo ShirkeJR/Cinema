@@ -5,15 +5,18 @@ import CinemaSystem.CinemaSystem.administration.domain.CinemaRepository;
 import com.google.common.collect.Lists;
 import org.springframework.stereotype.Repository;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Repository
 public class InMemoryCinemaRepository implements CinemaRepository {
 
-  private Map<UUID, Cinema> db = new HashMap<>();
+  private Map<String, Cinema> db = new HashMap<>();
 
   @Override
-  public Optional<Cinema> get(UUID id) {
+  public Optional<Cinema> get(String id) {
     if (!db.containsKey(id)) {
       //throw new IllegalArgumentException("No cinema by Id");
     }

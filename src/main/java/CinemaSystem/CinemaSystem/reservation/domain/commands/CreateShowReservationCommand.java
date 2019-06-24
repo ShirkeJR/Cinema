@@ -1,15 +1,16 @@
 package CinemaSystem.CinemaSystem.reservation.domain.commands;
 
 import CinemaSystem.CinemaSystem.core.Command;
+import CinemaSystem.CinemaSystem.reservation.domain.Customer;
 import CinemaSystem.CinemaSystem.reservation.domain.Seat;
-import CinemaSystem.CinemaSystem.reservation.domain.ShowReservationDetails;
+import CinemaSystem.CinemaSystem.reservation.domain.Ticket;
 
 import java.util.List;
-import java.util.UUID;
 
 public class CreateShowReservationCommand implements Command {
 
-  public UUID showId;
-  public ShowReservationDetails showReservationDetails;
-  public List<Seat> occupiedSeats;
+  public String showId;
+  public Customer customer;
+  public List<Seat> reservedSeats;
+  public List<Ticket> tickets;
 }

@@ -2,7 +2,9 @@ package CinemaSystem.CinemaSystem.reservation.adapters.rest;
 
 import CinemaSystem.CinemaSystem.core.CommandGateway;
 import CinemaSystem.CinemaSystem.reservation.domain.commands.CancelShowReservationCommand;
+import CinemaSystem.CinemaSystem.reservation.domain.commands.CreatePayedShowReservationCommand;
 import CinemaSystem.CinemaSystem.reservation.domain.commands.CreateShowReservationCommand;
+import CinemaSystem.CinemaSystem.reservation.domain.commands.PayShowReservationCommand;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,7 +12,7 @@ import java.util.UUID;
 
 
 @RestController
-@CrossOrigin(exposedHeaders = "errors, content-type")
+@CrossOrigin(exposedHeaders = "exeptions, content-type")
 @RequestMapping("/api/reservation")
 public class ShowReservationController {
 
@@ -21,18 +23,23 @@ public class ShowReservationController {
         this.commandGateway = commandGateway;
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public String create(@RequestBody CreateShowReservationCommand cmd) {
         return commandGateway.execute(cmd).toString();
     }
 
-    @PostMapping("/{id}")
-    public String selectSeats(@PathVariable UUID id, @RequestBody CreateShowReservationCommand cmd) {
+    @PostMapping("/{id}/pay")
+    public String pay(@PathVariable UUID id, @RequestBody PayShowReservationCommand cmd) {
         return commandGateway.execute(cmd).toString();
     }
 
-    @PostMapping("/cancel/{id}")
-    public void cancel(@PathVariable UUID id, @RequestBody CancelShowReservationCommand cmd) {
+    @PostMapping("/create-payed")
+    public String createPayed(@RequestBody CreatePayedShowReservationCommand cmd) {
+        return commandGateway.execute(cmd).toString();
+    }
+
+    @PostMapping("/{id}/cancel")
+    public void cancel(@PathVariable String id, @RequestBody CancelShowReservationCommand cmd) {
         commandGateway.execute(cmd);
     }
 
