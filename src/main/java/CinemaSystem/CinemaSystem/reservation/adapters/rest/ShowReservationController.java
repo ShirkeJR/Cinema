@@ -1,12 +1,15 @@
 package CinemaSystem.CinemaSystem.reservation.adapters.rest;
 
 import CinemaSystem.CinemaSystem.core.CommandGateway;
+import CinemaSystem.CinemaSystem.reservation.domain.ShowReservation;
 import CinemaSystem.CinemaSystem.reservation.domain.commands.CancelShowReservationCommand;
 import CinemaSystem.CinemaSystem.reservation.domain.commands.CreatePayedShowReservationCommand;
 import CinemaSystem.CinemaSystem.reservation.domain.commands.CreateShowReservationCommand;
 import CinemaSystem.CinemaSystem.reservation.domain.commands.PayShowReservationCommand;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -16,32 +19,48 @@ import java.util.UUID;
 @RequestMapping("/api/reservation")
 public class ShowReservationController {
 
-  private CommandGateway commandGateway;
+  private final CommandGateway commandGateway;
+  private final ModelMapper modelMapper;
 
   @Autowired
-  public ShowReservationController(CommandGateway commandGateway) {
+  public ShowReservationController(CommandGateway commandGateway, ModelMapper modelMapper) {
     this.commandGateway = commandGateway;
+    this.modelMapper = modelMapper;
   }
 
   @PostMapping("/create")
   @ResponseStatus(HttpStatus.CREATED)
-  public String create(@RequestBody CreateShowReservationCommand cmd) {
-    return commandGateway.execute(cmd).toString();
+  public CreatedShowReservationDto create(@RequestBody CreateShowReservationCommand cmd) {
+    return convertToCreatedShowDto(commandGateway.execute(cmd));
   }
 
+  @PreAuthorize("hasRole('CASHIER')")
   @PostMapping("/{id}/pay")
   public String pay(@PathVariable UUID id, @RequestBody PayShowReservationCommand cmd) {
     return commandGateway.execute(cmd).toString();
   }
 
-  @PostMapping("/create-payed")
+  @PreAuthorize("hasRole('CASHIER')")
+  @PostMapping("/createPayed")
   @ResponseStatus(HttpStatus.CREATED)
-  public String createPayed(@RequestBody CreatePayedShowReservationCommand cmd) {
-    return commandGateway.execute(cmd).toString();
+  public CreatedPayedShowReservationDto createPayed(@RequestBody CreatePayedShowReservationCommand cmd) {
+    return convertToCreatedPayedShowDto(commandGateway.execute(cmd));
   }
 
-  @PostMapping("/{id}/cancel")
+  @PostMapping("/cancel/{id}")
   public String cancel(@PathVariable String id, @RequestBody CancelShowReservationCommand cmd) {
     return commandGateway.execute(cmd);
+  }
+
+  private CreatedShowReservationDto convertToCreatedShowDto(ShowReservation showReservation){
+    CreatedShowReservationDto dto = modelMapper.map(showReservation, CreatedShowReservationDto.class);
+    dto.setTotalCost(showReservation.calculateTotalPrice());
+    return dto;
+  }
+
+  private CreatedPayedShowReservationDto convertToCreatedPayedShowDto(ShowReservation showReservation){
+    CreatedPayedShowReservationDto dto = modelMapper.map(showReservation, CreatedPayedShowReservationDto.class);
+    dto.setTotalCost(showReservation.calculateTotalPrice());
+    return dto;
   }
 }

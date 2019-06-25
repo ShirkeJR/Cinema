@@ -1,4 +1,4 @@
-package CinemaSystem.CinemaSystem.administration.domain.catolog;
+package CinemaSystem.CinemaSystem.administration.adapters.rest;
 
 import lombok.Getter;
 import lombok.Setter;

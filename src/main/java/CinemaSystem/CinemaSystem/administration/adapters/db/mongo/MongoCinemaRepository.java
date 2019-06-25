@@ -4,19 +4,17 @@ import CinemaSystem.CinemaSystem.administration.domain.Cinema;
 import CinemaSystem.CinemaSystem.administration.domain.CinemaRepository;
 import CinemaSystem.CinemaSystem.administration.domain.exeptions.CinemaNotFoundException;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Repository
+@Transactional
 public class MongoCinemaRepository implements CinemaRepository {
 
   private final SpringDataMongoCinemaRepository repository;
   private final ModelMapper modelMapper;
 
-  @Autowired
   public MongoCinemaRepository(
       SpringDataMongoCinemaRepository repository, ModelMapper modelMapper) {
     this.repository = repository;
@@ -26,7 +24,7 @@ public class MongoCinemaRepository implements CinemaRepository {
   @Override
   public Cinema get(String number) throws CinemaNotFoundException {
     CinemaMongoDto dto = repository.findById(number);
-    if(dto == null) throw new CinemaNotFoundException();
+    if (dto == null) throw new CinemaNotFoundException();
     return Cinema.builder().id(dto.getId()).name(dto.getName()).city(dto.getCity()).build();
   }
 
@@ -39,7 +37,7 @@ public class MongoCinemaRepository implements CinemaRepository {
   public List<Cinema> getAll() {
     return this.repository.findAll().stream()
         .map(
-            dto -> Cinema.builder().city(dto.getCity()).id(dto.getId()).name(dto.getName()).build())
+            dto -> Cinema.builder().id(dto.getId()).name(dto.getName()).city(dto.getCity()).build())
         .collect(Collectors.toList());
   }
 

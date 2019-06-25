@@ -2,25 +2,21 @@ package CinemaSystem.CinemaSystem.reservation.domain.handler;
 
 import CinemaSystem.CinemaSystem.administration.domain.ShowRepository;
 import CinemaSystem.CinemaSystem.core.Handler;
+import CinemaSystem.CinemaSystem.reservation.domain.ShowReservation;
 import CinemaSystem.CinemaSystem.reservation.domain.ShowReservationFactory;
 import CinemaSystem.CinemaSystem.reservation.domain.ShowReservationRepository;
 import CinemaSystem.CinemaSystem.reservation.domain.TicketOrder;
 import CinemaSystem.CinemaSystem.reservation.domain.commands.CreatePayedShowReservationCommand;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
 
-@Service
 public class CreatePayedShowReservationHandler
-    implements Handler<CreatePayedShowReservationCommand, String> {
+    implements Handler<CreatePayedShowReservationCommand, ShowReservation> {
 
   private final ShowReservationRepository showReservationRepository;
   private final ShowReservationFactory showReservationFactory;
   private final ShowRepository showRepository;
 
-  @Autowired
   public CreatePayedShowReservationHandler(
       ShowReservationRepository showReservationRepository,
       ShowReservationFactory showReservationFactory,
@@ -31,9 +27,8 @@ public class CreatePayedShowReservationHandler
     this.showRepository = showRepository;
   }
 
-  @Transactional
   @Override
-  public String handle(CreatePayedShowReservationCommand cmd) {
+  public ShowReservation handle(CreatePayedShowReservationCommand cmd) {
     var show = showRepository.get(cmd.showId);
 
     Set<TicketOrder> ticketOrders =
@@ -45,6 +40,6 @@ public class CreatePayedShowReservationHandler
     show.reserveReservation(showReservation);
     showRepository.put(show);
 
-    return showReservation.getId();
+    return showReservation;
   }
 }

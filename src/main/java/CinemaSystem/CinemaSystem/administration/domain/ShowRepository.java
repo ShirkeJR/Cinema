@@ -9,4 +9,6 @@ public interface ShowRepository {
   void put(Show show);
 
   List<Show> getAll();
+
+  List<Show> getAllForMovieInCinema(String movieId, String cinemaId);
 }

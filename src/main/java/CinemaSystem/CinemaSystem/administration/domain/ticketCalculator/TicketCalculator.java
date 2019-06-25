@@ -4,13 +4,11 @@ import CinemaSystem.CinemaSystem.administration.domain.exeptions.IllegalTicketTy
 import CinemaSystem.CinemaSystem.reservation.domain.Ticket;
 import CinemaSystem.CinemaSystem.reservation.domain.TicketOrder;
 import com.google.common.collect.Sets;
-import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.util.Map;
 import java.util.Set;
 
-@Component
 public class TicketCalculator {
 
   public Set<TicketOrder> calculateTickets(Map<String, BigDecimal> ticketPrices, Set<Ticket> tickets) {

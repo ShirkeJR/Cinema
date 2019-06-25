@@ -33,22 +33,26 @@ public class ShowReservationMongoRepositoryTest {
 
     assertThat(actualReservation.getId()).isEqualTo(showReservation.getId());
     assertThat(actualReservation.getShowId()).isEqualTo(showReservation.getShowId());
-    assertThat(actualReservation.getShowReservationStatus()).isEqualTo(showReservation.getShowReservationStatus());
+    assertThat(actualReservation.getShowReservationStatus())
+        .isEqualTo(showReservation.getShowReservationStatus());
   }
 
-    @Test
-    void shouldEditShowReservationFromMongo() {
-        var showReservation = new ShowReservation(id1, showId, new Customer(), Sets.newHashSet(), Sets.newHashSet());
-        showReservationRepository.put(showReservation);
-        var editedReservation = showReservationRepository.get(showReservation.getId());
-        editedReservation.cancel();
-        showReservationRepository.put(editedReservation);
+  @Test
+  void shouldEditShowReservationFromMongo() {
+    var showReservation =
+        new ShowReservation(id1, showId, new Customer(), Sets.newHashSet(), Sets.newHashSet());
+    showReservationRepository.put(showReservation);
+    var editedReservation = showReservationRepository.get(showReservation.getId());
+    editedReservation.cancel();
+    showReservationRepository.put(editedReservation);
 
-        var actualShowReservation = showReservationRepository.get(editedReservation.getId());
+    var actualShowReservation = showReservationRepository.get(editedReservation.getId());
 
-        assertThat(showReservation.getId()).isEqualTo(actualShowReservation.getId());
-        assertThat(showReservation.getShowId()).isEqualTo(actualShowReservation.getShowId());
-        assertThat(showReservation.getShowReservationStatus()).isEqualTo(ShowReservationStatus.CONFIRMED);
-        assertThat(actualShowReservation.getShowReservationStatus()).isEqualTo(ShowReservationStatus.CANCELED);
-    }
+    assertThat(showReservation.getId()).isEqualTo(actualShowReservation.getId());
+    assertThat(showReservation.getShowId()).isEqualTo(actualShowReservation.getShowId());
+    assertThat(showReservation.getShowReservationStatus())
+        .isEqualTo(ShowReservationStatus.CONFIRMED);
+    assertThat(actualShowReservation.getShowReservationStatus())
+        .isEqualTo(ShowReservationStatus.CANCELED);
+  }
 }

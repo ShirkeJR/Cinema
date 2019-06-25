@@ -18,14 +18,13 @@ public class MovieMongoRepositoryTest {
 
   @Autowired private MovieRepository movieRepository;
 
-  private final String id1 = UUID.randomUUID().toString();
-  private final String id2 = UUID.randomUUID().toString();
   private final String title = "Szczęki";
   private final String desc = "Se pływa rekin";
 
   @Test
   void shouldGetMovieFromMongo() {
-    var movie = Movie.builder().id(id1).title(title).description(desc).build();
+    var movie =
+        Movie.builder().id(UUID.randomUUID().toString()).title(title).description(desc).build();
     movieRepository.put(movie);
 
     var actualCinema = movieRepository.get(movie.getId());
@@ -37,8 +36,10 @@ public class MovieMongoRepositoryTest {
 
   @Test
   void shouldGetTwoMoviesFromMongo() {
-    var movie1 = Movie.builder().id(id1).title(title).description(desc).build();
-    var movie2 = Movie.builder().id(id2).title(title).description(desc).build();
+    var movie1 =
+        Movie.builder().id(UUID.randomUUID().toString()).title(title).description(desc).build();
+    var movie2 =
+        Movie.builder().id(UUID.randomUUID().toString()).title(title).description(desc).build();
     movieRepository.put(movie1);
     movieRepository.put(movie2);
 

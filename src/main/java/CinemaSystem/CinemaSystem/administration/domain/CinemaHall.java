@@ -17,12 +17,9 @@ public class CinemaHall {
   private int rows;
   private int columns;
 
-  private Cinema cinema;
-
   private Set<CinemaHallSeat> cinemaHallSeats = new HashSet<>();
 
-  public CinemaHall(Cinema cinema, int rows, int columns) {
-    this.cinema = cinema;
+  public CinemaHall(int rows, int columns) {
     this.rows = rows;
     this.columns = columns;
     createCinemaHall(rows, columns);

@@ -34,22 +34,16 @@ public class ShowTest {
           "normal", new BigDecimal(20),
           "extra", new BigDecimal(30));
 
-  private final String cinemaId = UUID.randomUUID().toString();
-  private final String cinemaCity = "Lublin";
-  private final String cinemaName = "Cinema";
-  private final Cinema cinema =
-      Cinema.builder().id(cinemaId).city(cinemaCity).name(cinemaName).build();
-
   private final int CINEMA_HALL_ROWS = 20;
   private final int CINEMA_HALL_COLUMNS = 30;
-  private final CinemaHall cinemaHall =
-      new CinemaHall(cinema, CINEMA_HALL_ROWS, CINEMA_HALL_COLUMNS);
+  private final CinemaHall cinemaHall = new CinemaHall(CINEMA_HALL_ROWS, CINEMA_HALL_COLUMNS);
+
+  private final String cinemaId = UUID.randomUUID().toString();
+  private final Cinema cinema = Cinema.builder().id(cinemaId).name("Plaza").city("Lublin").build();
 
   private final String movieId = UUID.randomUUID().toString();
-  private final String movieTitle = "Szczęki";
-  private final String movieDesc = "Se pływa rekin";
   private final Movie movie =
-      Movie.builder().id(movieId).title(movieTitle).description(movieDesc).build();
+      Movie.builder().id(movieId).title("Szczęki").description("Se pływa rekin").build();
 
   @Mock private ShowReservation showReservation;
   @Mock private TicketCalculator ticketCalculator;
@@ -62,10 +56,11 @@ public class ShowTest {
   @Test
   void createsShow() {
     var cmd = prepareCreateShowCommand();
-    var show = new Show(id, movie, cinemaHall, Date.from(cmd.time), cmd.tickets, ticketCalculator);
+    var show = new Show(id, movie, cinema, cinemaHall, Date.from(cmd.time), cmd.tickets, ticketCalculator);
 
     assertThat(show.getId()).isEqualTo(id);
     assertThat(show.getCinemaHall()).isEqualTo(cinemaHall);
+    assertThat(show.getCinema().getId()).isEqualTo(cinema.getId());
     assertThat(show.getMovie().getId()).isEqualTo(movieId);
     assertThat(show.getTime()).isEqualTo(Date.from(time));
     assertThat(show.getTicketPrices()).isEqualTo(tickets);
@@ -118,7 +113,7 @@ public class ShowTest {
 
   private Show createShow() {
     var cmd = prepareCreateShowCommand();
-    return new Show(id, movie, cinemaHall, Date.from(cmd.time), cmd.tickets, ticketCalculator);
+    return new Show(id, movie, cinema, cinemaHall, Date.from(cmd.time), cmd.tickets, ticketCalculator);
   }
 
   @Test
@@ -131,5 +126,4 @@ public class ShowTest {
 
     assertThrows(InvalidSeatAndTicketCountException.class, executable);
   }
-  
 }

@@ -18,10 +18,6 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 public class CinemaHallTest {
 
   private final String cinemaId = UUID.randomUUID().toString();
-  private final String cinemaCity = "Lublin";
-  private final String cinemaName = "Cinema";
-  private final Cinema cinema =
-      Cinema.builder().id(cinemaId).city(cinemaCity).name(cinemaName).build();
   private final int CINEMA_HALL_ROWS = 10;
   private final int CINEMA_HALL_COLUMNS = 10;
   private CinemaHall cinemaHall;
@@ -30,12 +26,11 @@ public class CinemaHallTest {
 
   @BeforeEach
   void setUp() {
-    cinemaHall = new CinemaHall(cinema, CINEMA_HALL_ROWS, CINEMA_HALL_COLUMNS);
+    cinemaHall = new CinemaHall(CINEMA_HALL_ROWS, CINEMA_HALL_COLUMNS);
   }
 
   @Test
   void createsCinemaHall() {
-    assertThat(cinemaHall.getCinema().getId()).isEqualTo(cinema.getId());
     assertThat(cinemaHall.getRows()).isEqualTo(CINEMA_HALL_ROWS);
     assertThat(cinemaHall.getColumns()).isEqualTo(CINEMA_HALL_COLUMNS);
     assertThat(cinemaHall.getCinemaHallSeats().isEmpty()).isFalse();
@@ -73,7 +68,7 @@ public class CinemaHallTest {
   }
 
   @Test
-  void freeTwoSeats() {
+  void unblocksTwoSeats() {
     Set<Seat> blockedSeats = Sets.newHashSet(seat1, seat2);
     Set<Seat> unBlockedSeats = Sets.newHashSet(seat1, seat2);
     cinemaHall.blockSeatsIfPossible(blockedSeats);

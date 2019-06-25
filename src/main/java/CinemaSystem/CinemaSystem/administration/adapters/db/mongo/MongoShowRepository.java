@@ -5,20 +5,18 @@ import CinemaSystem.CinemaSystem.administration.domain.ShowFactory;
 import CinemaSystem.CinemaSystem.administration.domain.ShowRepository;
 import CinemaSystem.CinemaSystem.administration.domain.exeptions.ShowNotFoundException;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Repository
+@Transactional
 public class MongoShowRepository implements ShowRepository {
 
   private final SpringDataMongoShowRepository repository;
   private final ModelMapper modelMapper;
   private final ShowFactory showFactory;
 
-  @Autowired
   public MongoShowRepository(
       SpringDataMongoShowRepository repository, ModelMapper modelMapper, ShowFactory showFactory) {
     this.repository = repository;
@@ -36,6 +34,13 @@ public class MongoShowRepository implements ShowRepository {
   @Override
   public void put(Show show) {
     this.repository.save(convertToDto(show));
+  }
+
+  @Override
+  public List<Show> getAllForMovieInCinema(String movieId, String cinemaId) {
+    return this.repository.findAllByMovieIdAndAndCinemaId(movieId, cinemaId).stream()
+            .map(showFactory::createFromMongoDto)
+            .collect(Collectors.toList());
   }
 
   @Override

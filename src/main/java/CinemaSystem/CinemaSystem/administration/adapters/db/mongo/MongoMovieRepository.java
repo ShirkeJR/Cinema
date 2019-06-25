@@ -4,19 +4,17 @@ import CinemaSystem.CinemaSystem.administration.domain.Movie;
 import CinemaSystem.CinemaSystem.administration.domain.MovieRepository;
 import CinemaSystem.CinemaSystem.administration.domain.exeptions.MovieNotFoundException;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Repository
+@Transactional
 public class MongoMovieRepository implements MovieRepository {
 
   private final SpringDataMongoMovieRepository repository;
   private final ModelMapper modelMapper;
 
-  @Autowired
   public MongoMovieRepository(SpringDataMongoMovieRepository repository, ModelMapper modelMapper) {
     this.repository = repository;
     this.modelMapper = modelMapper;

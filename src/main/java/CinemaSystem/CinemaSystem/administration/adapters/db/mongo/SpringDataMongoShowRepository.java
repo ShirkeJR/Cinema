@@ -11,4 +11,6 @@ public interface SpringDataMongoShowRepository extends Repository<ShowMongoDto, 
   ShowMongoDto findById(String id);
 
   List<ShowMongoDto> findAll();
+
+  List<ShowMongoDto> findAllByMovieIdAndAndCinemaId(String movieId, String cinemaId);
 }

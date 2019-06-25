@@ -1,9 +1,6 @@
 package CinemaSystem.CinemaSystem.administration.domain.dbTest;
 
-import CinemaSystem.CinemaSystem.administration.domain.CinemaHall;
-import CinemaSystem.CinemaSystem.administration.domain.Movie;
-import CinemaSystem.CinemaSystem.administration.domain.ShowFactory;
-import CinemaSystem.CinemaSystem.administration.domain.ShowRepository;
+import CinemaSystem.CinemaSystem.administration.domain.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +22,8 @@ public class ShowMongoRepositoryTest {
   @Autowired private ShowRepository showRepository;
   @Autowired private ShowFactory showFactory;
 
-  private final String id1 = UUID.randomUUID().toString();
-  private final String id2 = UUID.randomUUID().toString();
+  private Cinema cinema =
+      Cinema.builder().id(UUID.randomUUID().toString()).name("Plaza").city("Lublin").build();
   private Movie movie =
       Movie.builder().id(UUID.randomUUID().toString()).title("Raki").description("Rak").build();
   private CinemaHall cinemaHall = new CinemaHall();
@@ -34,7 +31,8 @@ public class ShowMongoRepositoryTest {
 
   @Test
   void shouldGetShowFromMongo() {
-    var show = showFactory.create(id1, cinemaHall, movie, Instant.now(), tickets);
+    var show =
+        showFactory.create(UUID.randomUUID().toString(), cinema, cinemaHall, movie, Instant.now(), tickets);
     showRepository.put(show);
 
     var actualShow = showRepository.get(show.getId());
@@ -44,8 +42,16 @@ public class ShowMongoRepositoryTest {
 
   @Test
   void shouldGetTwoShowsFromMongo() {
-    var show1 = showFactory.create(id1, cinemaHall, movie, Instant.now().plus(1, ChronoUnit.DAYS), tickets);
-    var show2 = showFactory.create(id2, cinemaHall, movie, Instant.now(), tickets);
+    var show1 =
+        showFactory.create(
+            UUID.randomUUID().toString(),
+            cinema,
+            cinemaHall,
+            movie,
+            Instant.now().plus(1, ChronoUnit.DAYS),
+            tickets);
+    var show2 =
+        showFactory.create(UUID.randomUUID().toString(), cinema, cinemaHall, movie, Instant.now(), tickets);
     showRepository.put(show1);
     showRepository.put(show2);
 

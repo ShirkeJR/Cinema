@@ -4,17 +4,13 @@ import CinemaSystem.CinemaSystem.administration.domain.ShowRepository;
 import CinemaSystem.CinemaSystem.core.Handler;
 import CinemaSystem.CinemaSystem.reservation.domain.ShowReservationRepository;
 import CinemaSystem.CinemaSystem.reservation.domain.commands.CancelShowReservationCommand;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Service
 public class CancelShowReservationHandler implements Handler<CancelShowReservationCommand, String> {
 
   private final ShowReservationRepository showReservationRepository;
   private final ShowRepository showRepository;
 
-  @Autowired
   public CancelShowReservationHandler(
       ShowReservationRepository showReservationRepository, ShowRepository showRepository) {
     this.showReservationRepository = showReservationRepository;

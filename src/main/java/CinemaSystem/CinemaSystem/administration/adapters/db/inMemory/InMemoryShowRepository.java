@@ -29,4 +29,9 @@ public class InMemoryShowRepository implements ShowRepository {
   public List<Show> getAll() {
     return Lists.newArrayList(db.values());
   }
+
+  @Override
+  public List<Show> getAllForMovieInCinema(String movieId, String cinemaId) {
+    return null;
+  }
 }

@@ -22,6 +22,8 @@ public class Show {
 
   private Movie movie;
 
+  private Cinema cinema;
+
   private CinemaHall cinemaHall;
 
   private Date time;
@@ -35,12 +37,14 @@ public class Show {
   public Show(
       String id,
       Movie movie,
+      Cinema cinema,
       CinemaHall cinemaHall,
       Date time,
       Map<String, BigDecimal> ticketPrices,
       TicketCalculator ticketCalculator) {
     this.id = id;
     this.movie = movie;
+    this.cinema = cinema;
     this.cinemaHall = cinemaHall;
     this.time = time;
     this.ticketPrices = ticketPrices;
@@ -73,15 +77,5 @@ public class Show {
     if (seatsCount != ticketsCount) {
       throw new InvalidSeatAndTicketCountException();
     }
-  }
-
-  private void cancelNotPayedReservations() {
-    reservations.forEach(
-        reservation -> {
-          if (reservation.isNotPayed()) {
-            unReserveReservation(reservation);
-            reservation.cancel();
-          }
-        });
   }
 }
