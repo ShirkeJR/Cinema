@@ -34,13 +34,13 @@ public class ShowReservationController {
     return convertToCreatedShowDto(commandGateway.execute(cmd));
   }
 
-  @PreAuthorize("hasRole('CASHIER')")
+  @PreAuthorize("hasAnyRole('CASHIER', 'ADMIN')")
   @PostMapping("/{id}/pay")
   public String pay(@PathVariable UUID id, @RequestBody PayShowReservationCommand cmd) {
     return commandGateway.execute(cmd).toString();
   }
 
-  @PreAuthorize("hasRole('CASHIER')")
+  @PreAuthorize("hasAnyRole('CASHIER', 'ADMIN')")
   @PostMapping("/createPayed")
   @ResponseStatus(HttpStatus.CREATED)
   public CreatedPayedShowReservationDto createPayed(@RequestBody CreatePayedShowReservationCommand cmd) {
@@ -48,7 +48,9 @@ public class ShowReservationController {
   }
 
   @PostMapping("/cancel/{id}")
-  public String cancel(@PathVariable String id, @RequestBody CancelShowReservationCommand cmd) {
+  public String cancel(@PathVariable String id) {
+    CancelShowReservationCommand cmd = new CancelShowReservationCommand();
+    cmd.reservationId = id;
     return commandGateway.execute(cmd);
   }
 

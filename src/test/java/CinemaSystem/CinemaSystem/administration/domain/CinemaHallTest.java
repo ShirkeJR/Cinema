@@ -30,10 +30,13 @@ public class CinemaHallTest {
   }
 
   @Test
-  void createsCinemaHall() {
+  void createsNewCinemaHall() {
     assertThat(cinemaHall.getRows()).isEqualTo(CINEMA_HALL_ROWS);
     assertThat(cinemaHall.getColumns()).isEqualTo(CINEMA_HALL_COLUMNS);
     assertThat(cinemaHall.getCinemaHallSeats().isEmpty()).isFalse();
+    assertThat(cinemaHall.getCinemaHallSeats().size()).isEqualTo(cinemaHall.getRows()*cinemaHall.getColumns());
+    cinemaHall.getCinemaHallSeats().forEach(seat -> assertThat(seat.isFree()).isTrue());
+
   }
 
   @Test
@@ -44,6 +47,8 @@ public class CinemaHallTest {
 
     assertThat(cinemaHall.findSeat(seat1).isFree()).isFalse();
     assertThat(cinemaHall.findSeat(seat2).isFree()).isFalse();
+    long countFreeSeats = cinemaHall.getCinemaHallSeats().stream().filter(CinemaHallSeat::isFree).count();
+    assertThat(countFreeSeats).isEqualTo(cinemaHall.getCinemaHallSeats().size() - 2);
   }
 
   @Test
@@ -77,6 +82,8 @@ public class CinemaHallTest {
 
     assertThat(cinemaHall.findSeat(seat1).isFree()).isTrue();
     assertThat(cinemaHall.findSeat(seat2).isFree()).isTrue();
+    long countFreeSeats = cinemaHall.getCinemaHallSeats().stream().filter(CinemaHallSeat::isFree).count();
+    assertThat(countFreeSeats).isEqualTo(cinemaHall.getCinemaHallSeats().size());
   }
 
   @Test
