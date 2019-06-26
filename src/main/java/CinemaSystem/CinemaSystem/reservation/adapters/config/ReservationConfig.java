@@ -3,6 +3,8 @@ package CinemaSystem.CinemaSystem.reservation.adapters.config;
 import CinemaSystem.CinemaSystem.administration.domain.ShowRepository;
 import CinemaSystem.CinemaSystem.reservation.adapters.db.mongo.MongoShowReservationRepository;
 import CinemaSystem.CinemaSystem.reservation.adapters.db.mongo.SpringDataMongoShowReservationRepository;
+import CinemaSystem.CinemaSystem.reservation.adapters.mail.EmptyMailSender;
+import CinemaSystem.CinemaSystem.reservation.adapters.mail.MailSender;
 import CinemaSystem.CinemaSystem.reservation.domain.ShowReservationFactory;
 import CinemaSystem.CinemaSystem.reservation.domain.ShowReservationRepository;
 import CinemaSystem.CinemaSystem.reservation.domain.handler.CancelShowReservationHandler;
@@ -23,20 +25,28 @@ public class ReservationConfig {
   }
 
   @Bean
-  public CancelShowReservationHandler cancelShowReservationHandler(
-      ShowReservationRepository showReservationRepository, ShowRepository showRepository) {
+  public MailSender mailSender() {
+    return new EmptyMailSender();
+  }
 
-    return new CancelShowReservationHandler(showReservationRepository, showRepository);
+  @Bean
+  public CancelShowReservationHandler cancelShowReservationHandler(
+      ShowReservationRepository showReservationRepository,
+      ShowRepository showRepository,
+      MailSender mailSender) {
+
+    return new CancelShowReservationHandler(showReservationRepository, showRepository, mailSender);
   }
 
   @Bean
   public CreateShowReservationHandler createShowReservationHandler(
       ShowReservationRepository showReservationRepository,
       ShowReservationFactory showReservationFactory,
-      ShowRepository showRepository) {
+      ShowRepository showRepository,
+      MailSender mailSender) {
 
     return new CreateShowReservationHandler(
-        showReservationRepository, showReservationFactory, showRepository);
+        showReservationRepository, showReservationFactory, showRepository, mailSender);
   }
 
   @Bean

@@ -2,6 +2,7 @@ package CinemaSystem.CinemaSystem.reservation.domain.handler;
 
 import CinemaSystem.CinemaSystem.administration.domain.ShowRepository;
 import CinemaSystem.CinemaSystem.core.Handler;
+import CinemaSystem.CinemaSystem.reservation.adapters.mail.MailSender;
 import CinemaSystem.CinemaSystem.reservation.domain.ShowReservation;
 import CinemaSystem.CinemaSystem.reservation.domain.ShowReservationFactory;
 import CinemaSystem.CinemaSystem.reservation.domain.ShowReservationRepository;
@@ -15,15 +16,17 @@ public class CreateShowReservationHandler implements Handler<CreateShowReservati
   private final ShowReservationRepository showReservationRepository;
   private final ShowReservationFactory showReservationFactory;
   private final ShowRepository showRepository;
+  private final MailSender mailSender;
 
   public CreateShowReservationHandler(
       ShowReservationRepository showReservationRepository,
       ShowReservationFactory showReservationFactory,
-      ShowRepository showRepository) {
+      ShowRepository showRepository, MailSender mailSender) {
 
     this.showReservationRepository = showReservationRepository;
     this.showReservationFactory = showReservationFactory;
     this.showRepository = showRepository;
+    this.mailSender = mailSender;
   }
 
   @Override
@@ -38,7 +41,7 @@ public class CreateShowReservationHandler implements Handler<CreateShowReservati
 
     show.reserveReservation(showReservation);
     showRepository.put(show);
-
+    mailSender.sendMail(showReservation);
     return showReservation;
   }
 }

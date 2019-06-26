@@ -2,6 +2,7 @@ package CinemaSystem.CinemaSystem.reservation.domain.handler;
 
 import CinemaSystem.CinemaSystem.administration.domain.ShowRepository;
 import CinemaSystem.CinemaSystem.core.Handler;
+import CinemaSystem.CinemaSystem.reservation.adapters.mail.MailSender;
 import CinemaSystem.CinemaSystem.reservation.domain.ShowReservationRepository;
 import CinemaSystem.CinemaSystem.reservation.domain.commands.CancelShowReservationCommand;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,11 +11,13 @@ public class CancelShowReservationHandler implements Handler<CancelShowReservati
 
   private final ShowReservationRepository showReservationRepository;
   private final ShowRepository showRepository;
+  private final MailSender mailSender;
 
   public CancelShowReservationHandler(
-      ShowReservationRepository showReservationRepository, ShowRepository showRepository) {
+      ShowReservationRepository showReservationRepository, ShowRepository showRepository, MailSender mailSender) {
     this.showReservationRepository = showReservationRepository;
     this.showRepository = showRepository;
+    this.mailSender = mailSender;
   }
 
   @Transactional
@@ -28,6 +31,7 @@ public class CancelShowReservationHandler implements Handler<CancelShowReservati
 
     showRepository.put(show);
     showReservationRepository.put(showReservation);
+    mailSender.sendMail(showReservation);
     return showReservation.getId();
   }
 }
