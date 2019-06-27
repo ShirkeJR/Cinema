@@ -14,16 +14,16 @@ public class CinemaTest {
   private final String name = "Cinema";
 
   @Test
-  void createsCinema() {
-    var cmd = prepareCreateCinemaCommand();
-    var cinema = Cinema.builder().id(id).city(cmd.city).name(cmd.name).build();
+  void createsNewCinema() {
+    var cmd = prepareCreateCinemaCommand(city, name);
+    var cinema = Cinema.of(id, cmd);
 
     assertThat(cinema.getId()).isEqualTo(id);
     assertThat(cinema.getName()).isEqualTo(name);
     assertThat(cinema.getCity()).isEqualTo(city);
   }
 
-  private CreateCinemaCommand prepareCreateCinemaCommand() {
+  private CreateCinemaCommand prepareCreateCinemaCommand(String city, String name) {
     var cmd = new CreateCinemaCommand();
     cmd.city = city;
     cmd.name = name;

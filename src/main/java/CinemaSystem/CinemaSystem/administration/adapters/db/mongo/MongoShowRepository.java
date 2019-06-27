@@ -5,12 +5,13 @@ import CinemaSystem.CinemaSystem.administration.domain.ShowFactory;
 import CinemaSystem.CinemaSystem.administration.domain.ShowRepository;
 import CinemaSystem.CinemaSystem.administration.domain.exeptions.ShowNotFoundException;
 import org.modelmapper.ModelMapper;
-import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Transactional
 public class MongoShowRepository implements ShowRepository {
 
   private final SpringDataMongoShowRepository repository;
@@ -27,30 +28,37 @@ public class MongoShowRepository implements ShowRepository {
   @Override
   public Show get(String number) throws ShowNotFoundException {
     ShowMongoDto dto = repository.findById(number);
-    if(dto == null) throw new ShowNotFoundException();
-    return showFactory.createFromMongoDto(dto);
+    if (dto == null) throw new ShowNotFoundException();
+    return showFactory.addTicketCalculator(convertToDomain(dto));
   }
 
   @Override
-  public void put(Show show) {
-    this.repository.save(convertToDto(show));
+  public Show put(Show show) {
+    ShowMongoDto dto = repository.save(convertToDto(show));
+    return showFactory.addTicketCalculator(convertToDomain(dto));
   }
 
   @Override
   public List<Show> getAllForMovieInCinema(String movieId, String cinemaId) {
     return this.repository.findAllByMovieIdAndAndCinemaId(movieId, cinemaId).stream()
-            .map(showFactory::createFromMongoDto)
-            .collect(Collectors.toList());
+        .map(this::convertToDomain)
+        .map(showFactory::addTicketCalculator)
+        .collect(Collectors.toList());
   }
 
   @Override
   public List<Show> getAll() {
-    return this.repository.findAll().stream()
-        .map(showFactory::createFromMongoDto)
+    return repository.findAll().stream()
+        .map(this::convertToDomain)
+        .map(showFactory::addTicketCalculator)
         .collect(Collectors.toList());
   }
 
   private ShowMongoDto convertToDto(Show show) {
     return modelMapper.map(show, ShowMongoDto.class);
+  }
+
+  private Show convertToDomain(ShowMongoDto showMongoDto) {
+    return modelMapper.map(showMongoDto, Show.class);
   }
 }

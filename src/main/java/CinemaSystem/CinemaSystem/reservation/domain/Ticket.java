@@ -1,16 +1,23 @@
 package CinemaSystem.CinemaSystem.reservation.domain;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.util.Objects;
 
 @Getter
-@AllArgsConstructor
 public class Ticket {
 
   private String type;
   private int count;
+
+  private Ticket(String type, int count) {
+    this.type = type;
+    this.count = count;
+  }
+
+  public static Ticket of(String type, int count) {
+    return new Ticket(type, count);
+  }
 
   @Override
   public boolean equals(Object o) {

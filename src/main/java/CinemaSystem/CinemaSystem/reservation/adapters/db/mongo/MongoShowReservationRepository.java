@@ -5,17 +5,13 @@ import CinemaSystem.CinemaSystem.reservation.domain.ShowReservationFactory;
 import CinemaSystem.CinemaSystem.reservation.domain.ShowReservationRepository;
 import CinemaSystem.CinemaSystem.reservation.domain.exceptions.ShowReservationNotFoundException;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 
-@Transactional
 public class MongoShowReservationRepository implements ShowReservationRepository {
 
   private final SpringDataMongoShowReservationRepository repository;
   private final ModelMapper modelMapper;
   private final ShowReservationFactory showFactory;
 
-  @Autowired
   public MongoShowReservationRepository(
       SpringDataMongoShowReservationRepository repository,
       ModelMapper modelMapper,
@@ -28,16 +24,21 @@ public class MongoShowReservationRepository implements ShowReservationRepository
   @Override
   public ShowReservation get(String number) throws ShowReservationNotFoundException {
     ShowReservationMongoDto dto = repository.findById(number);
-    if(dto == null) throw new ShowReservationNotFoundException();
-    return showFactory.createFromMongoDto(dto);
+    if (dto == null) throw new ShowReservationNotFoundException();
+    return convertToDomain(dto);
   }
 
   @Override
-  public void put(ShowReservation showReservation) {
-    this.repository.save(convertToDto(showReservation));
+  public ShowReservation put(ShowReservation showReservation) {
+    ShowReservationMongoDto dto = repository.save(convertToDto(showReservation));
+    return convertToDomain(dto);
   }
 
   private ShowReservationMongoDto convertToDto(ShowReservation showReservation) {
     return modelMapper.map(showReservation, ShowReservationMongoDto.class);
+  }
+
+  private ShowReservation convertToDomain(ShowReservationMongoDto showReservationMongoDto) {
+    return modelMapper.map(showReservationMongoDto, ShowReservation.class);
   }
 }

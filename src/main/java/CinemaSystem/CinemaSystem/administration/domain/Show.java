@@ -6,15 +6,18 @@ import CinemaSystem.CinemaSystem.administration.domain.ticketCalculator.TicketCa
 import CinemaSystem.CinemaSystem.reservation.domain.ShowReservation;
 import CinemaSystem.CinemaSystem.reservation.domain.Ticket;
 import CinemaSystem.CinemaSystem.reservation.domain.TicketOrder;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.apache.tomcat.jni.Local;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Getter
-@AllArgsConstructor
+@Setter
 @NoArgsConstructor
 public class Show {
 
@@ -26,22 +29,23 @@ public class Show {
 
   private CinemaHall cinemaHall;
 
-  private Date time;
+  private LocalDateTime time;
 
   private Map<String, BigDecimal> ticketPrices;
 
   private TicketCalculator ticketCalculator;
 
-  private List<ShowReservation> reservations;
+  private List<ShowReservation> reservations = new ArrayList<>();
 
   public Show(
       String id,
       Movie movie,
       Cinema cinema,
       CinemaHall cinemaHall,
-      Date time,
+      LocalDateTime time,
       Map<String, BigDecimal> ticketPrices,
       TicketCalculator ticketCalculator) {
+
     this.id = id;
     this.movie = movie;
     this.cinema = cinema;
@@ -49,7 +53,7 @@ public class Show {
     this.time = time;
     this.ticketPrices = ticketPrices;
     this.ticketCalculator = ticketCalculator;
-    reservations = new ArrayList<>();
+    this.reservations = new ArrayList<>();
   }
 
   public void reserveReservation(ShowReservation reservation) {

@@ -15,15 +15,15 @@ public class MovieTest {
 
   @Test
   void createsMovie() {
-    var cmd = prepareCreateMovieCommand();
-    var cinema = Movie.builder().id(id).title(cmd.title).description(cmd.description).build();
+    var cmd = prepareCreateMovieCommand(title, desc);
+    var movie = Movie.of(id, cmd);
 
-    assertThat(cinema.getId()).isEqualTo(id);
-    assertThat(cinema.getTitle()).isEqualTo(title);
-    assertThat(cinema.getDescription()).isEqualTo(desc);
+    assertThat(movie.getId()).isEqualTo(id);
+    assertThat(movie.getTitle()).isEqualTo(title);
+    assertThat(movie.getDescription()).isEqualTo(desc);
   }
 
-  private CreateMovieCommand prepareCreateMovieCommand() {
+  private CreateMovieCommand prepareCreateMovieCommand(String title, String desc) {
     var cmd = new CreateMovieCommand();
     cmd.title = title;
     cmd.description = desc;

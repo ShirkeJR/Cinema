@@ -4,8 +4,10 @@ import CinemaSystem.CinemaSystem.administration.domain.exeptions.IllegalTicketTy
 import CinemaSystem.CinemaSystem.administration.domain.ticketCalculator.TicketCalculator;
 import CinemaSystem.CinemaSystem.reservation.domain.Ticket;
 import CinemaSystem.CinemaSystem.reservation.domain.TicketOrder;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
+import org.mockito.Mock;
 
 import java.math.BigDecimal;
 import java.util.Map;
@@ -16,13 +18,18 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class TicketCalculatorTest {
 
+  @Mock private TicketCalculator ticketCalculator;
+
   private final Map<String, BigDecimal> ticketPrices =
       Map.of(
           "normal", new BigDecimal(20),
           "extra", new BigDecimal(30));
-  private final Set<Ticket> tickets = Set.of(new Ticket("normal", 2), new Ticket("extra", 1));
+  private final Set<Ticket> tickets = Set.of(Ticket.of("normal", 2), Ticket.of("extra", 1));
 
-  private final TicketCalculator ticketCalculator = new TicketCalculator();
+  @BeforeEach
+  void setUp() {
+    ticketCalculator = new TicketCalculator();
+  }
 
   @Test
   void returnsTwoTicketOrders() {
@@ -30,7 +37,7 @@ public class TicketCalculatorTest {
     var countOfTickets = 3;
     var totalCostForTickets = new BigDecimal(70);
 
-    Set<TicketOrder> ticketOrders = ticketCalculator.calculateTickets(ticketPrices, tickets);
+    var ticketOrders = ticketCalculator.calculateTickets(ticketPrices, tickets);
 
     assertThat(ticketOrders).hasSize(countOfTheSameTickets);
     assertThat(sumTickets(ticketOrders)).isEqualTo(countOfTickets);
@@ -38,7 +45,9 @@ public class TicketCalculatorTest {
   }
 
   private BigDecimal getTotalCostOfTickets(Set<TicketOrder> ticketOrders) {
-    return ticketOrders.stream().map(TicketOrder::getTotalPrice).reduce(BigDecimal.ZERO, BigDecimal::add);
+    return ticketOrders.stream()
+        .map(TicketOrder::getTotalPrice)
+        .reduce(BigDecimal.ZERO, BigDecimal::add);
   }
 
   private int sumTickets(Set<TicketOrder> ticketOrders) {
@@ -47,7 +56,7 @@ public class TicketCalculatorTest {
 
   @Test
   void expectsIllegalTicketTypeExceptionWhenShowDoesntContainTicketType() {
-    var wrongTickets = Set.of(new Ticket("student", 2));
+    Set<Ticket> wrongTickets = Set.of(Ticket.of("student", 2));
 
     Executable executable = () -> ticketCalculator.calculateTickets(ticketPrices, wrongTickets);
 

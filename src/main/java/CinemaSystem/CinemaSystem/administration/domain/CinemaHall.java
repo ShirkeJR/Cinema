@@ -4,12 +4,14 @@ import CinemaSystem.CinemaSystem.administration.domain.exeptions.InvalidSeatExce
 import CinemaSystem.CinemaSystem.reservation.domain.Seat;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Setter
 @Getter
 @NoArgsConstructor
 public class CinemaHall {
@@ -19,10 +21,14 @@ public class CinemaHall {
 
   private Set<CinemaHallSeat> cinemaHallSeats = new HashSet<>();
 
-  public CinemaHall(int rows, int columns) {
+  private CinemaHall(int rows, int columns) {
     this.rows = rows;
     this.columns = columns;
     createCinemaHall(rows, columns);
+  }
+
+  public static CinemaHall of(int rows, int columns) {
+    return new CinemaHall(rows, columns);
   }
 
   private void createCinemaHall(int rows, int columns) {

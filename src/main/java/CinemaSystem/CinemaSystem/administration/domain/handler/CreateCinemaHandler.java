@@ -17,8 +17,7 @@ public class CreateCinemaHandler implements Handler<CreateCinemaCommand, String>
 
   @Override
   public String handle(CreateCinemaCommand cmd) {
-    var cinema =
-        Cinema.builder().id(UUID.randomUUID().toString()).name(cmd.name).city(cmd.city).build();
+    var cinema = Cinema.of(UUID.randomUUID().toString(), cmd);
     cinemaRepository.put(cinema);
     return cinema.getId();
   }

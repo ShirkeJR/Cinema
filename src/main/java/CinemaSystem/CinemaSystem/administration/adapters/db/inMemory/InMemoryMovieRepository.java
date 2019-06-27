@@ -21,8 +21,8 @@ public class InMemoryMovieRepository implements MovieRepository {
   }
 
   @Override
-  public void put(Movie movie) {
-    db.put(movie.getId(), movie);
+  public Movie put(Movie movie) {
+    return db.put(movie.getId(), movie);
   }
 
   @Override

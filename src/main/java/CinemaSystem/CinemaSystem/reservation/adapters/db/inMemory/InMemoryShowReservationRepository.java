@@ -20,7 +20,7 @@ public class InMemoryShowReservationRepository implements ShowReservationReposit
   }
 
   @Override
-  public void put(ShowReservation showReservation) {
-    db.put(showReservation.getId(), showReservation);
+  public ShowReservation put(ShowReservation showReservation) {
+    return db.put(showReservation.getId(), showReservation);
   }
 }

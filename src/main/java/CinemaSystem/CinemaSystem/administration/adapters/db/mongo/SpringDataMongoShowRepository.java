@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface SpringDataMongoShowRepository extends Repository<ShowMongoDto, String> {
 
-  void save(ShowMongoDto dto);
+  ShowMongoDto save(ShowMongoDto dto);
 
   ShowMongoDto findById(String id);
 

@@ -4,6 +4,7 @@ import CinemaSystem.CinemaSystem.reservation.domain.exceptions.InvalidShowReserv
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.util.Set;
@@ -11,6 +12,7 @@ import java.util.Set;
 import static CinemaSystem.CinemaSystem.reservation.domain.ShowReservationStatus.*;
 
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class ShowReservation {
