@@ -6,7 +6,7 @@ public interface ShowRepository {
 
   Show get(String number);
 
-  void put(Show show);
+  Show put(Show show);
 
   List<Show> getAll();
 

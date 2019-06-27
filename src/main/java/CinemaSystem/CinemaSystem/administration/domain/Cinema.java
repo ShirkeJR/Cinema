@@ -1,17 +1,19 @@
 package CinemaSystem.CinemaSystem.administration.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import CinemaSystem.CinemaSystem.administration.domain.commands.CreateCinemaCommand;
+import lombok.*;
 
 @Getter
-@Builder
-@AllArgsConstructor
+@Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class Cinema {
 
   private String id;
   private String name;
   private String city;
+
+  public static Cinema of(String id, CreateCinemaCommand cmd){
+    return new Cinema(id, cmd.name, cmd.city);
+  }
 }

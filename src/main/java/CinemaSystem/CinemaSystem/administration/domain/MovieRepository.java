@@ -6,7 +6,7 @@ public interface MovieRepository {
 
   Movie get(String number);
 
-  void put(Movie movie);
+  Movie put(Movie movie);
 
   List<Movie> getAll();
 }

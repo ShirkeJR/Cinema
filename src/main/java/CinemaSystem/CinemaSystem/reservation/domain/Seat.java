@@ -1,18 +1,26 @@
 package CinemaSystem.CinemaSystem.reservation.domain;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.Objects;
 
 @Getter
+@Setter
+@NoArgsConstructor
 public class Seat {
 
-  private final int row;
-  private final int col;
+  private int row;
+  private int col;
 
   public Seat(int row, int col) {
     this.row = row;
     this.col = col;
+  }
+
+  public static Seat of(int row, int col) {
+    return new Seat(row, col);
   }
 
   @Override

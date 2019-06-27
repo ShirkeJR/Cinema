@@ -10,6 +10,7 @@ import CinemaSystem.CinemaSystem.reservation.domain.TicketOrder;
 import CinemaSystem.CinemaSystem.reservation.domain.commands.CreateShowReservationCommand;
 
 import java.util.Set;
+import java.util.UUID;
 
 public class CreateShowReservationHandler implements Handler<CreateShowReservationCommand, ShowReservation> {
 
@@ -36,7 +37,7 @@ public class CreateShowReservationHandler implements Handler<CreateShowReservati
     Set<TicketOrder> ticketOrders =
         show.calculateTicketsPerSeats(cmd.tickets, cmd.reservedSeats.size());
 
-    var showReservation = showReservationFactory.create(cmd, ticketOrders);
+    var showReservation = showReservationFactory.create(UUID.randomUUID().toString(), cmd, ticketOrders);
     showReservationRepository.put(showReservation);
 
     show.reserveReservation(showReservation);

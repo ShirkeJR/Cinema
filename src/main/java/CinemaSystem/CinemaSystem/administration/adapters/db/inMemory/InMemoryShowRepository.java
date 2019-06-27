@@ -21,8 +21,8 @@ public class InMemoryShowRepository implements ShowRepository {
   }
 
   @Override
-  public void put(Show show) {
-    db.put(show.getId(), show);
+  public Show put(Show show) {
+    return db.put(show.getId(), show);
   }
 
   @Override

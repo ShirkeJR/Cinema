@@ -1,6 +1,8 @@
 package CinemaSystem.CinemaSystem.e2e;
 
-import CinemaSystem.CinemaSystem.administration.domain.*;
+import CinemaSystem.CinemaSystem.administration.domain.CinemaRepository;
+import CinemaSystem.CinemaSystem.administration.domain.MovieRepository;
+import CinemaSystem.CinemaSystem.administration.domain.ShowRepository;
 import CinemaSystem.CinemaSystem.administration.domain.commands.CreateCinemaCommand;
 import CinemaSystem.CinemaSystem.administration.domain.commands.CreateMovieCommand;
 import CinemaSystem.CinemaSystem.administration.domain.commands.CreateShowCommand;
@@ -17,9 +19,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.math.BigDecimal;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 
@@ -36,50 +37,60 @@ public class CommandsTest {
   @Autowired private ShowRepository showRepository;
   @Autowired private ShowReservationRepository showReservationRepository;
 
+  private final Customer customer = Customer.builder()
+          .email("adjasuidja@o2.pl")
+            .firstName("Tomek")
+            .lastName("Kowalski")
+            .phoneNumer("423531642")
+            .build();
+
   @Test
   public void createsCinema() {
-    CreateCinemaCommand createCinemaCommand = createCinemaCommand();
+    var createCinemaCommand = createCinemaCommand("Lublin", "Plaza");
 
     String id = commandGateway.execute(createCinemaCommand);
 
-    Cinema cinema = cinemaRepository.get(id);
+    var cinema = cinemaRepository.get(id);
     assertThat(cinema).isNotNull();
     assertThat(cinema.getId()).isEqualTo(id);
-    assertThat(cinema.getName()).isEqualTo(createCinemaCommand.name);
-    assertThat(cinema.getCity()).isEqualTo(createCinemaCommand.city);
+    assertThat(cinema.getName()).isEqualTo("Plaza");
+    assertThat(cinema.getCity()).isEqualTo("Lublin");
   }
 
   @Test
   public void createsMovie() {
-    CreateMovieCommand createMovieCommand = createMovieCommand();
+    var createMovieCommand = createMovieCommand("Szczęki", "Se rekiny");
 
-      String id = commandGateway.execute(createMovieCommand);
+    String id = commandGateway.execute(createMovieCommand);
 
-    Movie movie = movieRepository.get(id);
+    var movie = movieRepository.get(id);
     assertThat(movie).isNotNull();
     assertThat(movie.getId()).isEqualTo(id);
-    assertThat(movie.getTitle()).isEqualTo(createMovieCommand.title);
-    assertThat(movie.getDescription()).isEqualTo(createMovieCommand.description);
+    assertThat(movie.getTitle()).isEqualTo("Szczęki");
+    assertThat(movie.getDescription()).isEqualTo("Se rekiny");
   }
 
   @Test
   public void createsShow() {
-    CreateShowCommand createShowCommand = createShowCommand();
+    String cinemaId = commandGateway.execute(createCinemaCommand("Lublin", "Plaza"));
+    String movieId = commandGateway.execute(createMovieCommand("Sczęki", "Se rekiny"));
+    var createShowCommand = createShowCommand(cinemaId, movieId, LocalDateTime.now().plus(2, ChronoUnit.DAYS), Map.of("extra", new BigDecimal(20)));
 
     String id = commandGateway.execute(createShowCommand);
 
-    Show show = showRepository.get(id);
+    var show = showRepository.get(id);
     assertThat(show).isNotNull();
     assertThat(show.getId()).isEqualTo(id);
-    assertThat(show.getReservations().isEmpty());
+    assertThat(show.getReservations().size()).isEqualTo(0);
     assertThat(show.getMovie().getId()).isEqualTo(createShowCommand.movieId);
+    assertThat(show.getCinema().getId()).isEqualTo(createShowCommand.cinemaId);
     assertThat(show.getTicketPrices()).isEqualTo(createShowCommand.tickets);
-    assertThat(show.getTime()).isEqualTo(Date.from(createShowCommand.time));
+    assertThat(show.getTime().getHour()).isEqualTo(createShowCommand.time.getHour());
   }
 
   @Test
   void createsShowReservation() {
-    CreateShowReservationCommand createShowReservationCommand = createShowReservationCommand();
+    CreateShowReservationCommand createShowReservationCommand = createShowReservationCommand(customer);
     ShowReservation createdShowReservation = commandGateway.execute(createShowReservationCommand);
 
     ShowReservation showReservation = showReservationRepository.get(createdShowReservation.getId());
@@ -114,7 +125,7 @@ public class CommandsTest {
 
   @Test
   void cancelsShowReservation() {
-    CreateShowReservationCommand createShowReservationCommand = createShowReservationCommand();
+    CreateShowReservationCommand createShowReservationCommand = createShowReservationCommand(customer);
     ShowReservation createdShowReservation = commandGateway.execute(createShowReservationCommand);
     CancelShowReservationCommand cancelShowReservationCommand =
         cancelShowReservationCommand(createdShowReservation.getId());
@@ -134,7 +145,7 @@ public class CommandsTest {
 
   @Test
   void paysShowReservation() {
-    CreateShowReservationCommand createShowReservationCommand = createShowReservationCommand();
+    CreateShowReservationCommand createShowReservationCommand = createShowReservationCommand(customer);
     ShowReservation createdShowReservation = commandGateway.execute(createShowReservationCommand);
     PayShowReservationCommand payShowReservationCommand =
         payShowReservationCommand(createdShowReservation.getId());
@@ -164,48 +175,39 @@ public class CommandsTest {
     return cancelShowReservationCommand;
   }
 
-  private CreateCinemaCommand createCinemaCommand() {
-    CreateCinemaCommand createCinemaCommand = new CreateCinemaCommand();
-    createCinemaCommand.name = "Cinema";
-    createCinemaCommand.city = "Lublin";
-    return createCinemaCommand;
+  private CreateMovieCommand createMovieCommand(String title, String desc) {
+    var cmd = new CreateMovieCommand();
+    cmd.title = title;
+    cmd.description = desc;
+    return cmd;
   }
 
-  private CreateMovieCommand createMovieCommand() {
-    CreateMovieCommand createMovieCommand = new CreateMovieCommand();
-    createMovieCommand.title = "Szczęki";
-    createMovieCommand.description = "Se pływa rekin";
-    return createMovieCommand;
+  private CreateCinemaCommand createCinemaCommand(String city, String name) {
+    var cmd = new CreateCinemaCommand();
+    cmd.city = city;
+    cmd.name = name;
+    return cmd;
   }
 
-  private CreateShowCommand createShowCommand() {
-    CreateShowCommand createShowCommand = new CreateShowCommand();
-    createShowCommand.tickets =
-        Map.of(
-            "normal", new BigDecimal(20),
-            "extra", new BigDecimal(30));
-
-    CreateCinemaCommand createCinemaCommand = createCinemaCommand();
-    createShowCommand.cinemaId = commandGateway.execute(createCinemaCommand);
-    CreateMovieCommand createMovieCommand = createMovieCommand();
-    createShowCommand.movieId = commandGateway.execute(createMovieCommand);
-    createShowCommand.time = Instant.now().plus(2, ChronoUnit.DAYS);
-    return createShowCommand;
+  private CreateShowCommand createShowCommand(
+          String cinemaId, String movieId, LocalDateTime time, Map<String, BigDecimal> tickets) {
+    var cmd = new CreateShowCommand();
+    cmd.cinemaId = cinemaId;
+    cmd.movieId = movieId;
+    cmd.time = time;
+    cmd.tickets = tickets;
+    return cmd;
   }
 
-  private CreateShowReservationCommand createShowReservationCommand() {
+  private CreateShowReservationCommand createShowReservationCommand(Customer customer) {
     CreateShowReservationCommand createShowReservationCommand = new CreateShowReservationCommand();
-    createShowReservationCommand.customer =
-        Customer.builder()
-            .email("adjasuidja@o2.pl")
-            .firstName("Tomek")
-            .lastName("Kowalski")
-            .phoneNumer("423531642")
-            .build();
+    createShowReservationCommand.customer = customer;
     createShowReservationCommand.reservedSeats = Set.of(new Seat(2, 3), new Seat(4, 5));
-    CreateShowCommand createShowCommand = createShowCommand();
+    String cinemaId = commandGateway.execute(createCinemaCommand("Lublin", "Plaza"));
+    String movieId = commandGateway.execute(createMovieCommand("Szczęki", "Plaza"));
+    CreateShowCommand createShowCommand = createShowCommand(cinemaId, movieId, LocalDateTime.now().plusDays(2L), Map.of("extra", new BigDecimal(20), "normal", new BigDecimal(10)));
     createShowReservationCommand.showId = commandGateway.execute(createShowCommand);
-    createShowReservationCommand.tickets = Set.of(new Ticket("extra", 1), new Ticket("normal", 1));
+    createShowReservationCommand.tickets = Set.of(Ticket.of("extra", 1), Ticket.of("normal", 1));
     return createShowReservationCommand;
   }
 
@@ -213,10 +215,12 @@ public class CommandsTest {
     CreatePayedShowReservationCommand createPayedShowReservationCommand =
         new CreatePayedShowReservationCommand();
     createPayedShowReservationCommand.reservedSeats = Set.of(new Seat(2, 3), new Seat(4, 5));
-    CreateShowCommand createShowCommand = createShowCommand();
+    String cinemaId = commandGateway.execute(createCinemaCommand("Lublin", "Plaza"));
+    String movieId = commandGateway.execute(createMovieCommand("Szczęki", "Plaza"));
+    CreateShowCommand createShowCommand = createShowCommand(cinemaId, movieId, LocalDateTime.now().plusDays(2L), Map.of("extra", new BigDecimal(20), "normal", new BigDecimal(10)));
     createPayedShowReservationCommand.showId = commandGateway.execute(createShowCommand);
     createPayedShowReservationCommand.tickets =
-        Set.of(new Ticket("extra", 1), new Ticket("normal", 1));
+        Set.of(Ticket.of("extra", 1), Ticket.of("normal", 1));
     return createPayedShowReservationCommand;
   }
 }

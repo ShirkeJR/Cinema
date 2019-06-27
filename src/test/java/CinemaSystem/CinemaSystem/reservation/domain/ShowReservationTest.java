@@ -35,10 +35,6 @@ class ShowReservationTest {
           .totalPrice(new BigDecimal(15))
           .build();
   private final Set<TicketOrder> tickets = Set.of(ticket1, ticket2);
-  private final String CustomerEmail = "adjasuidja@o2.pl";
-  private final String CustomerFirstName = "Tomek";
-  private final String CustomerLastName = "Kowalski";
-  private final String CustomerPhoneNumber = "423531642";
   private final Customer customer =
       Customer.builder()
           .email("adjasuidja@o2.pl")
@@ -53,12 +49,12 @@ class ShowReservationTest {
 
     assertThat(showReservation.getId()).isEqualTo(id);
     assertThat(showReservation.getShowId()).isEqualTo(showId);
-    assertThat(showReservation.getCustomer().getFirstName()).isEqualTo(CustomerFirstName);
-    assertThat(showReservation.getCustomer().getLastName()).isEqualTo(CustomerLastName);
-    assertThat(showReservation.getCustomer().getEmail()).isEqualTo(CustomerEmail);
-    assertThat(showReservation.getCustomer().getPhoneNumer()).isEqualTo(CustomerPhoneNumber);
-    assertThat(showReservation.getReservedSeats()).isEqualTo(Sets.newHashSet(reservedSeats));
-    assertThat(showReservation.getTickets()).isEqualTo(Sets.newHashSet(tickets));
+    assertThat(showReservation.getCustomer().getFirstName()).isEqualTo(customer.getFirstName());
+    assertThat(showReservation.getCustomer().getLastName()).isEqualTo(customer.getLastName());
+    assertThat(showReservation.getCustomer().getEmail()).isEqualTo(customer.getEmail());
+    assertThat(showReservation.getCustomer().getPhoneNumer()).isEqualTo(customer.getPhoneNumer());
+    assertThat(showReservation.getReservedSeats().size()).isEqualTo(reservedSeats.size());
+    assertThat(showReservation.getTickets().size()).isEqualTo(tickets.size());
     assertThat(showReservation.getShowReservationStatus()).isEqualTo(CONFIRMED);
   }
 
@@ -69,8 +65,8 @@ class ShowReservationTest {
     assertThat(showReservation.getId()).isEqualTo(id);
     assertThat(showReservation.getShowId()).isEqualTo(showId);
     assertThat(showReservation.getCustomer()).isNotNull();
-    assertThat(showReservation.getReservedSeats()).isEqualTo(Sets.newHashSet(reservedSeats));
-    assertThat(showReservation.getTickets()).isEqualTo(Sets.newHashSet(tickets));
+    assertThat(showReservation.getReservedSeats().size()).isEqualTo(reservedSeats.size());
+    assertThat(showReservation.getTickets().size()).isEqualTo(tickets.size());
     assertThat(showReservation.getShowReservationStatus()).isEqualTo(PAYED);
   }
 

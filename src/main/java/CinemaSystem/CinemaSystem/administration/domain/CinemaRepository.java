@@ -6,7 +6,7 @@ public interface CinemaRepository {
 
   Cinema get(String number);
 
-  void put(Cinema cinema);
+  Cinema put(Cinema cinema);
 
   List<Cinema> getAll();
 }

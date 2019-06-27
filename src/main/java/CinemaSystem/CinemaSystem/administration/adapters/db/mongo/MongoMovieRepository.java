@@ -4,12 +4,10 @@ import CinemaSystem.CinemaSystem.administration.domain.Movie;
 import CinemaSystem.CinemaSystem.administration.domain.MovieRepository;
 import CinemaSystem.CinemaSystem.administration.domain.exeptions.MovieNotFoundException;
 import org.modelmapper.ModelMapper;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Transactional
 public class MongoMovieRepository implements MovieRepository {
 
   private final SpringDataMongoMovieRepository repository;
@@ -23,33 +21,28 @@ public class MongoMovieRepository implements MovieRepository {
   @Override
   public Movie get(String number) throws MovieNotFoundException {
     MovieMongoDto dto = repository.findById(number);
-    if(dto == null) throw new MovieNotFoundException();
-    return Movie.builder()
-        .id(dto.getId())
-        .title(dto.getTitle())
-        .description(dto.getDescription())
-        .build();
+    if (dto == null) throw new MovieNotFoundException();
+    return convertToDomain(dto);
   }
 
   @Override
-  public void put(Movie movie) {
-    this.repository.save(convertToDto(movie));
+  public Movie put(Movie movie) {
+    MovieMongoDto dto = repository.save(convertToDto(movie));
+    return convertToDomain(dto);
   }
 
   @Override
   public List<Movie> getAll() {
     return this.repository.findAll().stream()
-        .map(
-            dto ->
-                Movie.builder()
-                    .id(dto.getId())
-                    .title(dto.getTitle())
-                    .description(dto.getDescription())
-                    .build())
+        .map(this::convertToDomain)
         .collect(Collectors.toList());
   }
 
   private MovieMongoDto convertToDto(Movie movie) {
     return modelMapper.map(movie, MovieMongoDto.class);
+  }
+
+  private Movie convertToDomain(MovieMongoDto movieMongoDto) {
+    return modelMapper.map(movieMongoDto, Movie.class);
   }
 }

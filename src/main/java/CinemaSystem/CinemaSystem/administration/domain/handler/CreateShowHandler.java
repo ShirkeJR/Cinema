@@ -32,9 +32,8 @@ public class CreateShowHandler implements Handler<CreateShowCommand, String> {
   public String handle(CreateShowCommand cmd) {
     var movie = movieRepository.get(cmd.movieId);
     var cinema = cinemaRepository.get(cmd.cinemaId);
-    var cinemaHall = new CinemaHall(CINEMAHALL_ROWS, CINEMAHALL_COLUMNS);
-    var show =
-        showFactory.create(UUID.randomUUID().toString(), cinema, cinemaHall, movie, cmd.time, cmd.tickets);
+    var cinemaHall = CinemaHall.of(CINEMAHALL_ROWS, CINEMAHALL_COLUMNS);
+    var show = showFactory.create(UUID.randomUUID().toString(), cinema, cinemaHall, movie, cmd);
     showRepository.put(show);
     return show.getId();
   }

@@ -17,12 +17,7 @@ public class CreateMovieHandler implements Handler<CreateMovieCommand, String> {
 
   @Override
   public String handle(CreateMovieCommand cmd) {
-    var movie =
-        Movie.builder()
-            .id(UUID.randomUUID().toString())
-            .title(cmd.title)
-            .description(cmd.description)
-            .build();
+    var movie = Movie.of(UUID.randomUUID().toString(), cmd);
     movieRepository.put(movie);
     return movie.getId();
   }

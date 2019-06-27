@@ -2,6 +2,8 @@ package CinemaSystem.CinemaSystem.administration.domain;
 
 import CinemaSystem.CinemaSystem.administration.domain.exeptions.SeatIsAlreadyBlockedException;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.Objects;
 
@@ -9,6 +11,8 @@ import static CinemaSystem.CinemaSystem.administration.domain.CinemaHallSeat.Hal
 import static CinemaSystem.CinemaSystem.administration.domain.CinemaHallSeat.HallSeatStatus.FREE;
 
 @Getter
+@Setter
+@NoArgsConstructor
 public class CinemaHallSeat {
   private int row;
   private int col;

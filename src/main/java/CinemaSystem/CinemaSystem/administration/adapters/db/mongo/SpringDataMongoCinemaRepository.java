@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface SpringDataMongoCinemaRepository extends Repository<CinemaMongoDto, String> {
 
-  void save(CinemaMongoDto dto);
+  CinemaMongoDto save(CinemaMongoDto dto);
 
   CinemaMongoDto findById(String id);
 
