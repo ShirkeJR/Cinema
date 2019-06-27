@@ -69,7 +69,7 @@ public class ShowReservationMongoRepositoryTest {
   }
 
   @Test
-  void editShowReservationFromMongo() {
+  void editsShowReservationFromMongo() {
     var createShowReservation = prepareCreateShowReservationCommand(showId, customer, reservedSeats);
     var showReservation = showReservationFactory.create(showReservationId, createShowReservation, tickets);
     var editedReservation = showReservationRepository.put(showReservation);

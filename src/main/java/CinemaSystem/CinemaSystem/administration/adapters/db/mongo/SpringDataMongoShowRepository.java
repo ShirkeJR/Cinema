@@ -2,6 +2,7 @@ package CinemaSystem.CinemaSystem.administration.adapters.db.mongo;
 
 import org.springframework.data.repository.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface SpringDataMongoShowRepository extends Repository<ShowMongoDto, String> {
@@ -13,4 +14,6 @@ public interface SpringDataMongoShowRepository extends Repository<ShowMongoDto, 
   List<ShowMongoDto> findAll();
 
   List<ShowMongoDto> findAllByMovieIdAndAndCinemaId(String movieId, String cinemaId);
+
+  List<ShowMongoDto> findAllByTime(LocalDateTime localDateTime);
 }

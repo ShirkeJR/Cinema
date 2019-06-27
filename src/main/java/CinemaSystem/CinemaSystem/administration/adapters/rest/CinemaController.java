@@ -5,6 +5,7 @@ import CinemaSystem.CinemaSystem.administration.domain.catolog.CinemaCatalog;
 import CinemaSystem.CinemaSystem.administration.domain.commands.CreateCinemaCommand;
 import CinemaSystem.CinemaSystem.core.CommandGateway;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,6 +29,7 @@ public class CinemaController {
 
   @PostMapping
   @PreAuthorize("hasRole('ADMIN')")
+  @ResponseStatus(HttpStatus.CREATED)
   public String create(@RequestBody CreateCinemaCommand cmd) {
     return commandGateway.execute(cmd).toString();
   }

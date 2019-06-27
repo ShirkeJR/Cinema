@@ -1,16 +1,15 @@
 package CinemaSystem.CinemaSystem.reservation.adapters.config;
 
 import CinemaSystem.CinemaSystem.administration.domain.ShowRepository;
+import CinemaSystem.CinemaSystem.core.CommandGateway;
 import CinemaSystem.CinemaSystem.reservation.adapters.db.mongo.MongoShowReservationRepository;
 import CinemaSystem.CinemaSystem.reservation.adapters.db.mongo.SpringDataMongoShowReservationRepository;
 import CinemaSystem.CinemaSystem.reservation.adapters.mail.EmptyMailSender;
 import CinemaSystem.CinemaSystem.reservation.adapters.mail.MailSender;
+import CinemaSystem.CinemaSystem.reservation.adapters.scheduler.ShowReservationCancelingScheduler;
 import CinemaSystem.CinemaSystem.reservation.domain.ShowReservationFactory;
 import CinemaSystem.CinemaSystem.reservation.domain.ShowReservationRepository;
-import CinemaSystem.CinemaSystem.reservation.domain.handler.CancelShowReservationHandler;
-import CinemaSystem.CinemaSystem.reservation.domain.handler.CreatePayedShowReservationHandler;
-import CinemaSystem.CinemaSystem.reservation.domain.handler.CreateShowReservationHandler;
-import CinemaSystem.CinemaSystem.reservation.domain.handler.PayShowReservationHandler;
+import CinemaSystem.CinemaSystem.reservation.domain.handler.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,6 +21,15 @@ public class ReservationConfig {
   public ShowReservationFactory showReservationFactory() {
 
     return new ShowReservationFactory();
+  }
+
+  @Bean
+  public CancelExpiredShowReservationHandler cancelExpiredShowReservationHandler(
+      ShowReservationRepository showReservationRepository,
+      ShowRepository showRepository,
+      MailSender mailSender) {
+    return new CancelExpiredShowReservationHandler(
+        showReservationRepository, showRepository, mailSender);
   }
 
   @Bean
@@ -74,5 +82,10 @@ public class ReservationConfig {
 
     return new MongoShowReservationRepository(
         springDataMongoShowReservationRepository, mapper, showReservationFactory);
+  }
+
+  @Bean
+  public ShowReservationCancelingScheduler showReservationCancelingScheduler(CommandGateway commandGateway){
+    return new ShowReservationCancelingScheduler(commandGateway);
   }
 }

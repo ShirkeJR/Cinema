@@ -5,6 +5,7 @@ import CinemaSystem.CinemaSystem.administration.domain.ShowRepository;
 import CinemaSystem.CinemaSystem.administration.domain.exeptions.ShowNotFoundException;
 import com.google.common.collect.Lists;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +33,11 @@ public class InMemoryShowRepository implements ShowRepository {
 
   @Override
   public List<Show> getAllForMovieInCinema(String movieId, String cinemaId) {
+    return null;
+  }
+
+  @Override
+  public List<Show> findAllByTime(LocalDateTime expirationTime) {
     return null;
   }
 }

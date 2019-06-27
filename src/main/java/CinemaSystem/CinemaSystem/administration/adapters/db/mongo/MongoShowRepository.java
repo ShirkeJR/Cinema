@@ -7,8 +7,6 @@ import CinemaSystem.CinemaSystem.administration.domain.exeptions.ShowNotFoundExc
 import org.modelmapper.ModelMapper;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -44,6 +42,14 @@ public class MongoShowRepository implements ShowRepository {
         .map(this::convertToDomain)
         .map(showFactory::addTicketCalculator)
         .collect(Collectors.toList());
+  }
+
+  @Override
+  public List<Show> findAllByTime(LocalDateTime expirationTime) {
+    return repository.findAllByTime(expirationTime).stream()
+            .map(this::convertToDomain)
+            .map(showFactory::addTicketCalculator)
+            .collect(Collectors.toList());
   }
 
   @Override

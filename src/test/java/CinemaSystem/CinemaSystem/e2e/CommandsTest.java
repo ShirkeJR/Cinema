@@ -37,12 +37,13 @@ public class CommandsTest {
   @Autowired private ShowRepository showRepository;
   @Autowired private ShowReservationRepository showReservationRepository;
 
-  private final Customer customer = Customer.builder()
+  private final Customer customer =
+      Customer.builder()
           .email("adjasuidja@o2.pl")
-            .firstName("Tomek")
-            .lastName("Kowalski")
-            .phoneNumer("423531642")
-            .build();
+          .firstName("Tomek")
+          .lastName("Kowalski")
+          .phoneNumer("423531642")
+          .build();
 
   @Test
   public void createsCinema() {
@@ -74,7 +75,12 @@ public class CommandsTest {
   public void createsShow() {
     String cinemaId = commandGateway.execute(createCinemaCommand("Lublin", "Plaza"));
     String movieId = commandGateway.execute(createMovieCommand("Sczęki", "Se rekiny"));
-    var createShowCommand = createShowCommand(cinemaId, movieId, LocalDateTime.now().plus(2, ChronoUnit.DAYS), Map.of("extra", new BigDecimal(20)));
+    var createShowCommand =
+        createShowCommand(
+            cinemaId,
+            movieId,
+            LocalDateTime.now().plus(2, ChronoUnit.DAYS),
+            Map.of("extra", new BigDecimal(20)));
 
     String id = commandGateway.execute(createShowCommand);
 
@@ -90,7 +96,8 @@ public class CommandsTest {
 
   @Test
   void createsShowReservation() {
-    CreateShowReservationCommand createShowReservationCommand = createShowReservationCommand(customer);
+    CreateShowReservationCommand createShowReservationCommand =
+        createShowReservationCommand(customer);
     ShowReservation createdShowReservation = commandGateway.execute(createShowReservationCommand);
 
     ShowReservation showReservation = showReservationRepository.get(createdShowReservation.getId());
@@ -109,7 +116,8 @@ public class CommandsTest {
   void createsPayedShowReservation() {
     CreatePayedShowReservationCommand createPayedShowReservationCommand =
         createPayedShowReservationCommand();
-    ShowReservation createdShowReservation = commandGateway.execute(createPayedShowReservationCommand);
+    ShowReservation createdShowReservation =
+        commandGateway.execute(createPayedShowReservationCommand);
 
     ShowReservation showReservation = showReservationRepository.get(createdShowReservation.getId());
 
@@ -125,7 +133,8 @@ public class CommandsTest {
 
   @Test
   void cancelsShowReservation() {
-    CreateShowReservationCommand createShowReservationCommand = createShowReservationCommand(customer);
+    CreateShowReservationCommand createShowReservationCommand =
+        createShowReservationCommand(customer);
     ShowReservation createdShowReservation = commandGateway.execute(createShowReservationCommand);
     CancelShowReservationCommand cancelShowReservationCommand =
         cancelShowReservationCommand(createdShowReservation.getId());
@@ -145,7 +154,8 @@ public class CommandsTest {
 
   @Test
   void paysShowReservation() {
-    CreateShowReservationCommand createShowReservationCommand = createShowReservationCommand(customer);
+    CreateShowReservationCommand createShowReservationCommand =
+        createShowReservationCommand(customer);
     ShowReservation createdShowReservation = commandGateway.execute(createShowReservationCommand);
     PayShowReservationCommand payShowReservationCommand =
         payShowReservationCommand(createdShowReservation.getId());
@@ -190,7 +200,7 @@ public class CommandsTest {
   }
 
   private CreateShowCommand createShowCommand(
-          String cinemaId, String movieId, LocalDateTime time, Map<String, BigDecimal> tickets) {
+      String cinemaId, String movieId, LocalDateTime time, Map<String, BigDecimal> tickets) {
     var cmd = new CreateShowCommand();
     cmd.cinemaId = cinemaId;
     cmd.movieId = movieId;
@@ -205,7 +215,12 @@ public class CommandsTest {
     createShowReservationCommand.reservedSeats = Set.of(new Seat(2, 3), new Seat(4, 5));
     String cinemaId = commandGateway.execute(createCinemaCommand("Lublin", "Plaza"));
     String movieId = commandGateway.execute(createMovieCommand("Szczęki", "Plaza"));
-    CreateShowCommand createShowCommand = createShowCommand(cinemaId, movieId, LocalDateTime.now().plusDays(2L), Map.of("extra", new BigDecimal(20), "normal", new BigDecimal(10)));
+    CreateShowCommand createShowCommand =
+        createShowCommand(
+            cinemaId,
+            movieId,
+            LocalDateTime.now().plusDays(2L),
+            Map.of("extra", new BigDecimal(20), "normal", new BigDecimal(10)));
     createShowReservationCommand.showId = commandGateway.execute(createShowCommand);
     createShowReservationCommand.tickets = Set.of(Ticket.of("extra", 1), Ticket.of("normal", 1));
     return createShowReservationCommand;
@@ -217,7 +232,12 @@ public class CommandsTest {
     createPayedShowReservationCommand.reservedSeats = Set.of(new Seat(2, 3), new Seat(4, 5));
     String cinemaId = commandGateway.execute(createCinemaCommand("Lublin", "Plaza"));
     String movieId = commandGateway.execute(createMovieCommand("Szczęki", "Plaza"));
-    CreateShowCommand createShowCommand = createShowCommand(cinemaId, movieId, LocalDateTime.now().plusDays(2L), Map.of("extra", new BigDecimal(20), "normal", new BigDecimal(10)));
+    CreateShowCommand createShowCommand =
+        createShowCommand(
+            cinemaId,
+            movieId,
+            LocalDateTime.now().plusDays(2L),
+            Map.of("extra", new BigDecimal(20), "normal", new BigDecimal(10)));
     createPayedShowReservationCommand.showId = commandGateway.execute(createShowCommand);
     createPayedShowReservationCommand.tickets =
         Set.of(Ticket.of("extra", 1), Ticket.of("normal", 1));

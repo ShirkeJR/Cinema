@@ -1,5 +1,6 @@
 package CinemaSystem.CinemaSystem.administration.domain;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface ShowRepository {
@@ -11,4 +12,6 @@ public interface ShowRepository {
   List<Show> getAll();
 
   List<Show> getAllForMovieInCinema(String movieId, String cinemaId);
+
+  List<Show> findAllByTime(LocalDateTime expirationTime);
 }

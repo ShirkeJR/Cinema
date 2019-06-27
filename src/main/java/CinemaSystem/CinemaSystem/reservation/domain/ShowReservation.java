@@ -55,8 +55,8 @@ public class ShowReservation {
   }
 
   public void cancel() {
-    if (showReservationStatus == CANCELED) throw new InvalidShowReservationStatusException();
-    showReservationStatus = CANCELED;
+    if (isNotPayed()) showReservationStatus = CANCELED;
+    else throw new InvalidShowReservationStatusException();
   }
 
   public void pay() {

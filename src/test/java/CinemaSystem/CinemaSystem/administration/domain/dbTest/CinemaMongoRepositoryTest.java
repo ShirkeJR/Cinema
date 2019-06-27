@@ -29,7 +29,7 @@ public class CinemaMongoRepositoryTest {
 
 
   @Test
-  void shouldGetCinemaFromMongo() {
+  void getsCinemaFromMongo() {
     var cinema = createCinema(UUID.randomUUID().toString(),"Lublim", "Plaza");
 
     cinemaRepository.put(cinema);
@@ -42,7 +42,7 @@ public class CinemaMongoRepositoryTest {
   }
 
   @Test
-  void shouldGetTwoCinemasFromMongo() {
+  void getsTwoCinemasFromMongo() {
     var cinema1 = createCinema(UUID.randomUUID().toString(),"Poznań", "Plao");
     var cinema2 = createCinema(UUID.randomUUID().toString(),"Szczecin", "KINO");
 

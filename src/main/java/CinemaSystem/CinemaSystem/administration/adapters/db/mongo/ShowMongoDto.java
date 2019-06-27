@@ -34,5 +34,6 @@ public class ShowMongoDto {
 
   private Map<String, BigDecimal> ticketPrices;
 
+  @DBRef
   private List<ShowReservationMongoDto> reservations;
 }

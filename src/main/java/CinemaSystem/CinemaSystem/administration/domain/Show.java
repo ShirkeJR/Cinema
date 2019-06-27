@@ -82,4 +82,8 @@ public class Show {
       throw new InvalidSeatAndTicketCountException();
     }
   }
+
+  public void cancelNotPayedReservations() {
+    reservations.forEach(ShowReservation::isNotPayed);
+  }
 }
